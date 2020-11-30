@@ -8,6 +8,7 @@ import (
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
+	"github.com/disintegration/gift"
 )
 
 func (a *App) loadStatusBar() *widget.Box {
@@ -43,20 +44,20 @@ func (a *App) loadEditControls() *widget.Box {
 	a.sliderContrast.SetValue(0)
 
 	a.sliderBrightness.OnChanged = func(f float64) {
-		if a.autochange {
-			a.apply()
-		}
+		a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange)
 	}
 	a.sliderContrast.OnChanged = func(f float64) {
-		if a.autochange {
-			a.apply()
-		}
+		a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange)
 	}
 
 	a.applyBtn = widget.NewButtonWithIcon("Apply", theme.ConfirmIcon(), a.apply)
-	a.applyBtn.Disable()
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
+
+	// disable widgets until a file was opened
 	a.resetBtn.Disable()
+	a.applyBtn.Disable()
+	a.sliderBrightness.Hide()
+	a.sliderContrast.Hide()
 
 	a.editControls = widget.NewHBox(
 		widget.NewSeparator(),

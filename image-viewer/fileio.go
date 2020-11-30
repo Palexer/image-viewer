@@ -60,10 +60,12 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	}
 
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
-	a.widthLabel.SetText(fmt.Sprintf("Width:   %d", a.img.OriginalImageData.Width))
-	a.heightLabel.SetText(fmt.Sprintf("Height: %d", a.img.OriginalImageData.Height))
+	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
+	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
 	a.applyBtn.Enable()
 	a.resetBtn.Enable()
+	a.sliderBrightness.Show()
+	a.sliderContrast.Show()
 	return nil
 }
 

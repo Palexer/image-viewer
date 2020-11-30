@@ -11,43 +11,42 @@ type Img struct {
 	OriginalImage     image.Image
 	OriginalImageData image.Config
 	EditedImage       *image.RGBA
-	Filter            *gift.GIFT
+	gifted            *Gifted
 	Path              string
+
+	// saved filters
+	brightness gift.Filter
+	contrast   gift.Filter
 }
 
 func (i *Img) init() {
-	i.Filter = gift.New()
+	i.gifted = &Gifted{}
+	i.gifted.GIFT = gift.New()
 }
 
-// func (i *Img) changeBrightness(value float64) {
-// 	i.Filter.Add(gift.Brightness(float32(value)))
-// }
-
-// func (i *Img) changeContrast(percentage float64) {
-// 	i.Filter.Add(gift.Contrast(float32(percentage)))
-// }
-
 func (a *App) apply() {
-	// clear all filters
-	a.img.Filter.Empty()
-
-	// add possible filters
-	a.img.Filter.Add(gift.Brightness(float32(a.sliderBrightness.Value)))
-	a.img.Filter.Add(gift.Contrast(float32(a.sliderContrast.Value)))
-
 	// apply filters
-	a.img.EditedImage = image.NewRGBA(a.img.Filter.Bounds(a.img.OriginalImage.Bounds()))
-	a.img.Filter.Draw(a.img.EditedImage, a.img.OriginalImage)
+	a.img.EditedImage = image.NewRGBA(a.img.gifted.Bounds(a.img.OriginalImage.Bounds()))
+	a.img.gifted.Draw(a.img.EditedImage, a.img.OriginalImage)
 
 	// show new image
 	a.image.Image = a.img.EditedImage
-	defer a.image.Refresh()
+	a.image.Refresh()
+}
+
+func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter, autochange bool) {
+	a.img.gifted.Remove(*filterVar)
+	a.img.gifted.Add(newFilter)
+	*filterVar = newFilter
+	if autochange {
+		a.apply()
+	}
 }
 
 func (a *App) reset() {
 	a.sliderBrightness.SetValue(0)
 	a.sliderContrast.SetValue(0)
-	a.img.Filter.Empty()
+	a.img.gifted.Empty()
 	a.img.EditedImage = nil
 	a.image.Image = a.img.OriginalImage
 	defer a.image.Refresh()
