@@ -1,11 +1,18 @@
+# Image Viewer
+
+
+# Used Tools
+
+- Language: Go
+- UI framework: fyne
+- Image processing backend: gift
+
 ## ToDo
 
-Bearbeitung: 
-    - Änderungen stehen nicht im Verhältnis zum Originalbild
-        a) sie sind keine Werte, sonder Wertveränderungen
-        b) sie beziehen sich auf das bearbeitete Bild
+- make realtime editing faster
+- save files
+- view images in fullscreen
 
-Dateispeicherung:
-    - erfolgt nicht
+## License
 
-Bild im Volllbild ansehen
+[MIT](LICENSE)
