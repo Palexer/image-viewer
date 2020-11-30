@@ -36,19 +36,27 @@ func (a *App) loadInformationWidgets() *widget.Box {
 	return a.informationWidgets
 }
 
-func (a *App) loadEditControls() *widget.Box {
-	a.sliderBrightness = widget.NewSlider(-100, 100)
-	a.sliderBrightness.SetValue(0)
+func (a *App) loadEditControls() *container.Scroll {
+	a.editBrightness = NewEditingOption(
+		"Brightness: ",
+		widget.NewSlider(-100, 100),
+		func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange) },
+		0,
+	)
 
-	a.sliderContrast = widget.NewSlider(-100, 100)
-	a.sliderContrast.SetValue(0)
+	a.editContrast = NewEditingOption(
+		"Contrast: ",
+		widget.NewSlider(-100, 100),
+		func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange) },
+		0,
+	)
 
-	a.sliderBrightness.OnChanged = func(f float64) {
-		a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange)
-	}
-	a.sliderContrast.OnChanged = func(f float64) {
-		a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange)
-	}
+	a.editHue = NewEditingOption(
+		"Hue: ",
+		widget.NewSlider(-180, 180),
+		func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f)), a.autochange) },
+		0,
+	)
 
 	a.applyBtn = widget.NewButtonWithIcon("Apply", theme.ConfirmIcon(), a.apply)
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
@@ -56,23 +64,27 @@ func (a *App) loadEditControls() *widget.Box {
 	// disable widgets until a file was opened
 	a.resetBtn.Disable()
 	a.applyBtn.Disable()
-	a.sliderBrightness.Hide()
-	a.sliderContrast.Hide()
+	a.editBrightness.Hide()
+	a.editContrast.Hide()
+	a.editHue.Hide()
 
-	a.editControls = widget.NewHBox(
-		widget.NewSeparator(),
-		widget.NewVBox(
-			widget.NewLabelWithStyle("Editor", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-			widget.NewLabel("Brightness: "),
-			a.sliderBrightness,
-			widget.NewLabel("Contrast: "),
-			a.sliderContrast,
-			a.resetBtn,
-			layout.NewSpacer(),
-			a.applyBtn,
+	// group widgets in a scroll container
+	a.scrollEditingWidgets = container.NewScroll(
+		widget.NewHBox(
+			widget.NewSeparator(),
+			widget.NewVBox(
+				widget.NewLabelWithStyle("Editor", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+				a.editBrightness,
+				a.editContrast,
+				a.editHue,
+				a.resetBtn,
+				layout.NewSpacer(),
+				a.applyBtn,
+			),
 		),
 	)
-	return a.editControls
+	a.scrollEditingWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
+	return a.scrollEditingWidgets
 }
 
 func (a *App) loadMainUI() fyne.CanvasObject {
@@ -97,11 +109,11 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 				}
 			}),
 			fyne.NewMenuItem("Editor", func() {
-				if a.editControls.Visible() {
-					a.editControls.Hide()
+				if a.scrollEditingWidgets.Visible() {
+					a.scrollEditingWidgets.Hide()
 					a.app.Preferences().SetBool("editorVisible", false)
 				} else {
-					a.editControls.Show()
+					a.scrollEditingWidgets.Show()
 					a.app.Preferences().SetBool("editorVisible", true)
 				}
 			}),

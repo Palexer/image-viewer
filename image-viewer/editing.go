@@ -17,6 +17,7 @@ type Img struct {
 	// saved filters
 	brightness gift.Filter
 	contrast   gift.Filter
+	hue        gift.Filter
 }
 
 func (i *Img) init() {
@@ -44,8 +45,7 @@ func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter, aut
 }
 
 func (a *App) reset() {
-	a.sliderBrightness.SetValue(0)
-	a.sliderContrast.SetValue(0)
+	// set values to 0
 	a.img.gifted.Empty()
 	a.img.EditedImage = nil
 	a.image.Image = a.img.OriginalImage

@@ -4,8 +4,20 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
+	"fyne.io/fyne/container"
 	"fyne.io/fyne/widget"
 )
+
+// NewEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
+func NewEditingOption(infoText string, editingWidget *widget.Slider, onChanged func(float64), defaultValue float64) *widget.Box {
+	editingWidget.SetValue(defaultValue)
+	editingWidget.OnChanged = func(f float64) { onChanged(f) }
+	vbox := widget.NewVBox(
+		widget.NewLabel(infoText),
+		editingWidget,
+	)
+	return vbox
+}
 
 // App represents the whole application with all its windows, widgets and functions
 type App struct {
@@ -18,12 +30,14 @@ type App struct {
 
 	image *canvas.Image
 
-	sliderBrightness *widget.Slider
-	sliderContrast   *widget.Slider
-	applyBtn         *widget.Button
-	resetBtn         *widget.Button
+	editBrightness *widget.Box
+	editContrast   *widget.Box
+	editHue        *widget.Box
 
-	editControls       *widget.Box
+	applyBtn             *widget.Button
+	resetBtn             *widget.Button
+	scrollEditingWidgets *container.Scroll
+
 	informationWidgets *widget.Box
 	widthLabel         *widget.Label
 	heightLabel        *widget.Label

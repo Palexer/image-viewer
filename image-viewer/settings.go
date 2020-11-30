@@ -1,7 +1,6 @@
 package main
 
 import (
-	"fyne.io/fyne"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -33,7 +32,6 @@ func (a *App) loadSettingsUI() {
 		),
 		autochangeSelector,
 	))
-	winSettings.Resize(fyne.NewSize(320, 240))
 	winSettings.Show()
 }
 
@@ -52,7 +50,7 @@ func (a *App) loadPreferences() {
 	}
 
 	if a.app.Preferences().BoolWithFallback("editorVisible", true) == false {
-		a.editControls.Hide()
+		a.scrollEditingWidgets.Hide()
 	}
 
 	if a.app.Preferences().BoolWithFallback("statusBarVisible", true) == false {

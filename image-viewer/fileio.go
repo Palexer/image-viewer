@@ -64,8 +64,9 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
 	a.applyBtn.Enable()
 	a.resetBtn.Enable()
-	a.sliderBrightness.Show()
-	a.sliderContrast.Show()
+	a.editBrightness.Show()
+	a.editContrast.Show()
+	a.editHue.Show()
 	return nil
 }
 
