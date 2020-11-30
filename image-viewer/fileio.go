@@ -84,9 +84,9 @@ func (a *App) save(writer fyne.URIWriteCloser) error {
 		return errors.New("cancelled")
 	}
 	switch writer.URI().Extension() {
-	case "jpeg":
+	case ".jpeg":
 		jpeg.Encode(writer, a.img.EditedImage, nil)
-	case "png":
+	case ".png":
 		png.Encode(writer, a.img.EditedImage)
 	default:
 		os.Remove(writer.URI().String()[7:])
