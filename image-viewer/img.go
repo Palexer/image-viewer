@@ -18,6 +18,10 @@ type Img struct {
 	brightness gift.Filter
 	contrast   gift.Filter
 	hue        gift.Filter
+	// color balance red, green, blue
+	cbRed   gift.Filter
+	cbGreen gift.Filter
+	cbBlue  gift.Filter
 }
 
 func (i *Img) init() {
@@ -48,6 +52,9 @@ func (a *App) reset() {
 	a.sliderBrightness.SetValue(0)
 	a.sliderContrast.SetValue(0)
 	a.sliderHue.SetValue(0)
+	a.sliderColorBalanceR.SetValue(0)
+	a.sliderColorBalanceG.SetValue(0)
+	a.sliderColorBalanceB.SetValue(0)
 
 	a.img.gifted.Empty()
 	a.img.EditedImage = nil

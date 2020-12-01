@@ -64,15 +64,45 @@ func (a *App) loadEditControls() *container.Scroll {
 		0,
 	)
 
+	a.sliderColorBalanceR = widget.NewSlider(-100, 500)
+	a.editColorBalanceR = NewEditingOption(
+		"Red: ",
+		a.sliderColorBalanceR,
+		func(f float64) {
+			a.changeParameter(&a.img.cbRed, gift.ColorBalance(
+				float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)), a.autochange)
+		},
+		0,
+	)
+
+	a.sliderColorBalanceG = widget.NewSlider(-100, 500)
+	a.editColorBalanceG = NewEditingOption(
+		"Green: ",
+		a.sliderColorBalanceG,
+		func(f float64) {
+			a.changeParameter(&a.img.cbGreen, gift.ColorBalance(
+				float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)), a.autochange)
+		},
+		0,
+	)
+
+	a.sliderColorBalanceB = widget.NewSlider(-100, 500)
+	a.editColorBalanceB = NewEditingOption(
+		"Blue: ",
+		a.sliderColorBalanceB,
+		func(f float64) {
+			a.changeParameter(&a.img.cbBlue, gift.ColorBalance(
+				float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)), a.autochange)
+		},
+		0,
+	)
+
 	a.applyBtn = widget.NewButtonWithIcon("Apply", theme.ConfirmIcon(), a.apply)
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
 
-	// disable widgets until a file was opened
-	a.resetBtn.Disable()
-	a.applyBtn.Disable()
-	a.editBrightness.Hide()
-	a.editContrast.Hide()
-	a.editHue.Hide()
+	// hide all widgets until a file was opened
+	// a.scrollEditingWidgets.Content.Hide()
+	// a.informationWidgets.Content.Hide()
 
 	// group widgets in a scroll container
 	a.scrollEditingWidgets = container.NewScroll(
@@ -80,16 +110,23 @@ func (a *App) loadEditControls() *container.Scroll {
 			widget.NewSeparator(),
 			widget.NewVBox(
 				widget.NewLabelWithStyle("Editor", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+				widget.NewLabel("General: "),
 				a.editBrightness,
 				a.editContrast,
 				a.editHue,
+				widget.NewSeparator(),
+				widget.NewLabel("Color Balance: "),
+				a.editColorBalanceR,
+				a.editColorBalanceG,
+				a.editColorBalanceB,
+				widget.NewSeparator(),
 				a.resetBtn,
 				layout.NewSpacer(),
 				a.applyBtn,
 			),
 		),
 	)
-	a.scrollEditingWidgets.SetMinSize(fyne.NewSize(120, a.mainWin.Canvas().Size().Height))
+	a.scrollEditingWidgets.SetMinSize(fyne.NewSize(130, a.mainWin.Canvas().Size().Height))
 	return a.scrollEditingWidgets
 }
 

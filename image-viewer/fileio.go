@@ -62,11 +62,8 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
 	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
-	a.applyBtn.Enable()
-	a.resetBtn.Enable()
-	a.editBrightness.Show()
-	a.editContrast.Show()
-	a.editHue.Show()
+	a.scrollEditingWidgets.Content.Show()
+	a.informationWidgets.Content.Show()
 	return nil
 }
 
