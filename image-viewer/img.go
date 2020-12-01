@@ -45,7 +45,10 @@ func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter, aut
 }
 
 func (a *App) reset() {
-	// set values to 0
+	a.sliderBrightness.SetValue(0)
+	a.sliderContrast.SetValue(0)
+	a.sliderHue.SetValue(0)
+
 	a.img.gifted.Empty()
 	a.img.EditedImage = nil
 	a.image.Image = a.img.OriginalImage

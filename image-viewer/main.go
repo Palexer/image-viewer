@@ -34,11 +34,15 @@ type App struct {
 	editContrast   *widget.Box
 	editHue        *widget.Box
 
+	sliderBrightness *widget.Slider
+	sliderContrast   *widget.Slider
+	sliderHue        *widget.Slider
+
 	applyBtn             *widget.Button
 	resetBtn             *widget.Button
 	scrollEditingWidgets *container.Scroll
 
-	informationWidgets *widget.Box
+	informationWidgets *container.Scroll
 	widthLabel         *widget.Label
 	heightLabel        *widget.Label
 	statusBar          *widget.Box

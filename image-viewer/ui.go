@@ -22,38 +22,44 @@ func (a *App) loadStatusBar() *widget.Box {
 	return a.statusBar
 }
 
-func (a *App) loadInformationWidgets() *widget.Box {
+func (a *App) loadInformationWidgets() *container.Scroll {
 	a.widthLabel = widget.NewLabel("Width: ")
 	a.heightLabel = widget.NewLabel("Height: ")
-	a.informationWidgets = widget.NewHBox(
-		widget.NewVBox(
-			widget.NewLabelWithStyle("Information", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-			a.widthLabel,
-			a.heightLabel,
+	a.informationWidgets = container.NewScroll(
+		widget.NewHBox(
+			widget.NewVBox(
+				widget.NewLabelWithStyle("Information", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
+				a.widthLabel,
+				a.heightLabel,
+			),
+			widget.NewSeparator(),
 		),
-		widget.NewSeparator(),
 	)
+	a.informationWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
 	return a.informationWidgets
 }
 
 func (a *App) loadEditControls() *container.Scroll {
+	a.sliderBrightness = widget.NewSlider(-100, 100)
 	a.editBrightness = NewEditingOption(
 		"Brightness: ",
-		widget.NewSlider(-100, 100),
+		a.sliderBrightness,
 		func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange) },
 		0,
 	)
 
+	a.sliderContrast = widget.NewSlider(-100, 100)
 	a.editContrast = NewEditingOption(
 		"Contrast: ",
-		widget.NewSlider(-100, 100),
+		a.sliderContrast,
 		func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange) },
 		0,
 	)
 
+	a.sliderHue = widget.NewSlider(-180, 180)
 	a.editHue = NewEditingOption(
 		"Hue: ",
-		widget.NewSlider(-180, 180),
+		a.sliderHue,
 		func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f)), a.autochange) },
 		0,
 	)
@@ -83,7 +89,7 @@ func (a *App) loadEditControls() *container.Scroll {
 			),
 		),
 	)
-	a.scrollEditingWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
+	a.scrollEditingWidgets.SetMinSize(fyne.NewSize(120, a.mainWin.Canvas().Size().Height))
 	return a.scrollEditingWidgets
 }
 
