@@ -44,7 +44,7 @@ func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter, aut
 	a.img.gifted.Add(newFilter)
 	*filterVar = newFilter
 	if autochange {
-		a.apply()
+		go a.apply()
 	}
 }
 

@@ -44,7 +44,7 @@ func (a *App) loadEditControls() *container.Scroll {
 	a.editBrightness = NewEditingOption(
 		"Brightness: ",
 		a.sliderBrightness,
-		func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange) },
+		func(f float64) { go a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange) },
 		0,
 	)
 
@@ -52,7 +52,7 @@ func (a *App) loadEditControls() *container.Scroll {
 	a.editContrast = NewEditingOption(
 		"Contrast: ",
 		a.sliderContrast,
-		func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange) },
+		func(f float64) { go a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange) },
 		0,
 	)
 
@@ -60,7 +60,7 @@ func (a *App) loadEditControls() *container.Scroll {
 	a.editHue = NewEditingOption(
 		"Hue: ",
 		a.sliderHue,
-		func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f)), a.autochange) },
+		func(f float64) { go a.changeParameter(&a.img.hue, gift.Hue(float32(f)), a.autochange) },
 		0,
 	)
 
@@ -69,7 +69,7 @@ func (a *App) loadEditControls() *container.Scroll {
 		"Red: ",
 		a.sliderColorBalanceR,
 		func(f float64) {
-			a.changeParameter(&a.img.cbRed, gift.ColorBalance(
+			go a.changeParameter(&a.img.cbRed, gift.ColorBalance(
 				float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)), a.autochange)
 		},
 		0,
@@ -80,7 +80,7 @@ func (a *App) loadEditControls() *container.Scroll {
 		"Green: ",
 		a.sliderColorBalanceG,
 		func(f float64) {
-			a.changeParameter(&a.img.cbGreen, gift.ColorBalance(
+			go a.changeParameter(&a.img.cbGreen, gift.ColorBalance(
 				float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)), a.autochange)
 		},
 		0,
@@ -91,7 +91,7 @@ func (a *App) loadEditControls() *container.Scroll {
 		"Blue: ",
 		a.sliderColorBalanceB,
 		func(f float64) {
-			a.changeParameter(&a.img.cbBlue, gift.ColorBalance(
+			go a.changeParameter(&a.img.cbBlue, gift.ColorBalance(
 				float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)), a.autochange)
 		},
 		0,
