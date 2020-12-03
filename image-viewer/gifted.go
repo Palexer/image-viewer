@@ -20,7 +20,7 @@ func (g *Gifted) Remove(filter gift.Filter) bool {
 	return false
 }
 
-// Replace replaces the old with the new filter
+// Replace replaces the old with the new filter. If the old filter doesn't exist, it applys the new filter.
 func (g *Gifted) Replace(old, new gift.Filter) bool {
 	for i, f := range g.Filters {
 		if f == old {
@@ -28,5 +28,6 @@ func (g *Gifted) Replace(old, new gift.Filter) bool {
 			return true
 		}
 	}
+	g.Add(new)
 	return false
 }
