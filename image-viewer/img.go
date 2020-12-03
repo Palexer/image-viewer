@@ -40,8 +40,9 @@ func (a *App) apply() {
 }
 
 func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter, autochange bool) {
-	a.img.gifted.Remove(*filterVar)
-	a.img.gifted.Add(newFilter)
+	a.img.gifted.Replace(*filterVar, newFilter)
+	// a.img.gifted.Remove(*filterVar)
+	// a.img.gifted.Add(newFilter)
 	*filterVar = newFilter
 	if autochange {
 		go a.apply()
