@@ -1,7 +1,7 @@
 # Image Viewer
 
 
-# Used Tools
+## Used Tools
 
 - Language: Go
 - UI framework: fyne
@@ -9,8 +9,6 @@
 
 ## ToDo
 
-- make realtime editing faster
-- save files
 - view images in fullscreen
 
 ## License

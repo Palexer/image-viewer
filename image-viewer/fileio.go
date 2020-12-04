@@ -14,6 +14,7 @@ import (
 
 func (a *App) openFile() {
 	dialog.ShowFileOpen(func(reader fyne.URIReadCloser, err error) {
+		defer reader.Close()
 		if err != nil {
 			dialog.ShowError(err, a.mainWin)
 			return

@@ -8,23 +8,27 @@ import (
 	"fyne.io/fyne/widget"
 )
 
-// NewEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
-func NewEditingOption(infoText string, editingWidget *widget.Slider, onChanged func(float64), defaultValue float64) *widget.Box {
-	editingWidget.SetValue(defaultValue)
-	editingWidget.OnChanged = func(f float64) { onChanged(f) }
-	vbox := widget.NewVBox(
-		widget.NewLabel(infoText),
-		editingWidget,
-	)
-	return vbox
+type editingSlider struct {
+	widget.Slider
+	dragEndFunc func(float64)
+}
+
+func (e *editingSlider) DragEnd() {
+	e.dragEndFunc(e.Value)
+}
+
+func newEditingSlider(min, max float64) *editingSlider {
+	editSlider := &editingSlider{}
+	editSlider.Max = max
+	editSlider.Min = min
+	editSlider.ExtendBaseWidget(editSlider)
+	return editSlider
 }
 
 // App represents the whole application with all its windows, widgets and functions
 type App struct {
 	app     fyne.App
 	mainWin fyne.Window
-
-	autochange bool
 
 	img Img
 
@@ -37,14 +41,13 @@ type App struct {
 	editColorBalanceG *widget.Box
 	editColorBalanceB *widget.Box
 
-	sliderBrightness    *widget.Slider
-	sliderContrast      *widget.Slider
-	sliderHue           *widget.Slider
-	sliderColorBalanceR *widget.Slider
-	sliderColorBalanceG *widget.Slider
-	sliderColorBalanceB *widget.Slider
+	sliderBrightness    *editingSlider
+	sliderContrast      *editingSlider
+	sliderHue           *editingSlider
+	sliderColorBalanceR *editingSlider
+	sliderColorBalanceG *editingSlider
+	sliderColorBalanceB *editingSlider
 
-	applyBtn             *widget.Button
 	resetBtn             *widget.Button
 	scrollEditingWidgets *container.Scroll
 
@@ -53,6 +56,16 @@ type App struct {
 	heightLabel        *widget.Label
 	statusBar          *widget.Box
 	imagePathLabel     *widget.Label
+}
+
+// newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
+func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
+	slider.SetValue(defaultValue)
+	vbox := widget.NewVBox(
+		widget.NewLabel(infoText),
+		slider,
+	)
+	return vbox
 }
 
 func main() {

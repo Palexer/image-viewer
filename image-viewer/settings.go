@@ -19,18 +19,11 @@ func (a *App) loadSettingsUI() {
 	})
 	themeSelector.SetSelected(a.app.Preferences().StringWithFallback("Theme", "Dark"))
 
-	autochangeSelector := widget.NewCheck("Automatically apply filters to image while editing (slower) ", func(b bool) {
-		a.autochange = b
-		a.app.Preferences().SetBool("Autochange", b)
-	})
-	autochangeSelector.SetChecked(a.app.Preferences().BoolWithFallback("Autochange", false))
-
 	winSettings.SetContent(widget.NewVBox(
 		widget.NewHBox(
 			widget.NewLabel("Theme"),
 			themeSelector,
 		),
-		autochangeSelector,
 	))
 	winSettings.Show()
 }
@@ -55,12 +48,5 @@ func (a *App) loadPreferences() {
 
 	if a.app.Preferences().BoolWithFallback("statusBarVisible", true) == false {
 		a.statusBar.Hide()
-	}
-
-	switch a.app.Preferences().BoolWithFallback("Autochange", false) {
-	case true:
-		a.autochange = true
-	case false:
-		a.autochange = false
 	}
 }

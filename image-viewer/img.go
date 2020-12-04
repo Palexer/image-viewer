@@ -29,27 +29,22 @@ func (i *Img) init() {
 	i.gifted.GIFT = gift.New()
 }
 
-func (a *App) apply() {
-	// apply filters
-	a.img.EditedImage = image.NewRGBA(a.img.gifted.Bounds(a.img.OriginalImage.Bounds()))
-	a.img.gifted.Draw(a.img.EditedImage, a.img.OriginalImage)
-
-	// show new image
-	a.image.Image = a.img.EditedImage
-	a.image.Refresh()
-}
-
-func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter, autochange bool) {
+func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter) {
 	a.img.gifted.Replace(*filterVar, newFilter)
-	// a.img.gifted.Remove(*filterVar)
-	// a.img.gifted.Add(newFilter)
 	*filterVar = newFilter
-	if autochange {
-		go a.apply()
-	}
+	go func() {
+		// apply filters
+		a.img.EditedImage = image.NewRGBA(a.img.gifted.Bounds(a.img.OriginalImage.Bounds()))
+		a.img.gifted.Draw(a.img.EditedImage, a.img.OriginalImage)
+
+		// show new image
+		a.image.Image = a.img.EditedImage
+		a.image.Refresh()
+	}()
 }
 
 func (a *App) reset() {
+	defer a.image.Refresh()
 	a.sliderBrightness.SetValue(0)
 	a.sliderContrast.SetValue(0)
 	a.sliderHue.SetValue(0)
@@ -60,5 +55,4 @@ func (a *App) reset() {
 	a.img.gifted.Empty()
 	a.img.EditedImage = nil
 	a.image.Image = a.img.OriginalImage
-	defer a.image.Refresh()
 }

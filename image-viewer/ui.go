@@ -40,64 +40,63 @@ func (a *App) loadInformationWidgets() *container.Scroll {
 }
 
 func (a *App) loadEditControls() *container.Scroll {
-	a.sliderBrightness = widget.NewSlider(-100, 100)
-	a.editBrightness = NewEditingOption(
+	a.sliderBrightness = newEditingSlider(-100, 100)
+	a.sliderBrightness.dragEndFunc = func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f))) }
+	a.editBrightness = newEditingOption(
 		"Brightness: ",
 		a.sliderBrightness,
-		func(f float64) { go a.changeParameter(&a.img.brightness, gift.Brightness(float32(f)), a.autochange) },
 		0,
 	)
 
-	a.sliderContrast = widget.NewSlider(-100, 100)
-	a.editContrast = NewEditingOption(
+	a.sliderContrast = newEditingSlider(-100, 100)
+	a.sliderContrast.dragEndFunc = func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f))) }
+	a.editContrast = newEditingOption(
 		"Contrast: ",
 		a.sliderContrast,
-		func(f float64) { go a.changeParameter(&a.img.contrast, gift.Contrast(float32(f)), a.autochange) },
 		0,
 	)
 
-	a.sliderHue = widget.NewSlider(-180, 180)
-	a.editHue = NewEditingOption(
+	a.sliderHue = newEditingSlider(-180, 180)
+	a.sliderHue.dragEndFunc = func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f))) }
+	a.editHue = newEditingOption(
 		"Hue: ",
 		a.sliderHue,
-		func(f float64) { go a.changeParameter(&a.img.hue, gift.Hue(float32(f)), a.autochange) },
 		0,
 	)
 
-	a.sliderColorBalanceR = widget.NewSlider(-100, 500)
-	a.editColorBalanceR = NewEditingOption(
+	a.sliderColorBalanceR = newEditingSlider(-100, 500)
+	a.sliderColorBalanceR.dragEndFunc = func(f float64) {
+		a.changeParameter(&a.img.cbRed, gift.ColorBalance(
+			float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)))
+	}
+	a.editColorBalanceR = newEditingOption(
 		"Red: ",
 		a.sliderColorBalanceR,
-		func(f float64) {
-			go a.changeParameter(&a.img.cbRed, gift.ColorBalance(
-				float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)), a.autochange)
-		},
 		0,
 	)
 
-	a.sliderColorBalanceG = widget.NewSlider(-100, 500)
-	a.editColorBalanceG = NewEditingOption(
+	a.sliderColorBalanceG = newEditingSlider(-100, 500)
+	a.sliderColorBalanceG.dragEndFunc = func(f float64) {
+		a.changeParameter(&a.img.cbGreen, gift.ColorBalance(
+			float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)))
+	}
+	a.editColorBalanceG = newEditingOption(
 		"Green: ",
 		a.sliderColorBalanceG,
-		func(f float64) {
-			go a.changeParameter(&a.img.cbGreen, gift.ColorBalance(
-				float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)), a.autochange)
-		},
 		0,
 	)
 
-	a.sliderColorBalanceB = widget.NewSlider(-100, 500)
-	a.editColorBalanceB = NewEditingOption(
+	a.sliderColorBalanceB = newEditingSlider(-100, 500)
+	a.sliderColorBalanceB.dragEndFunc = func(f float64) {
+		a.changeParameter(&a.img.cbBlue, gift.ColorBalance(
+			float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)))
+	}
+	a.editColorBalanceB = newEditingOption(
 		"Blue: ",
 		a.sliderColorBalanceB,
-		func(f float64) {
-			go a.changeParameter(&a.img.cbBlue, gift.ColorBalance(
-				float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)), a.autochange)
-		},
 		0,
 	)
 
-	a.applyBtn = widget.NewButtonWithIcon("Apply", theme.ConfirmIcon(), a.apply)
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
 
 	// hide all widgets until a file was opened
@@ -120,9 +119,8 @@ func (a *App) loadEditControls() *container.Scroll {
 				a.editColorBalanceG,
 				a.editColorBalanceB,
 				widget.NewSeparator(),
-				a.resetBtn,
 				layout.NewSpacer(),
-				a.applyBtn,
+				a.resetBtn,
 			),
 		),
 	)
