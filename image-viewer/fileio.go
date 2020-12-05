@@ -14,12 +14,10 @@ import (
 
 func (a *App) openFile() {
 	dialog.ShowFileOpen(func(reader fyne.URIReadCloser, err error) {
-		defer reader.Close()
 		if err != nil {
 			dialog.ShowError(err, a.mainWin)
 			return
 		}
-
 		if err == nil && reader == nil {
 			return
 		}
@@ -29,7 +27,7 @@ func (a *App) openFile() {
 			dialog.ShowError(err, a.mainWin)
 			return
 		}
-
+		defer reader.Close()
 	}, a.mainWin)
 }
 
