@@ -67,6 +67,7 @@ func (a *App) reset() {
 
 func (a *App) undo() {
 	if len(a.img.lastFilters) > 0 {
+		a.img.gifted.Remove(a.img.lastFilters[len(a.img.lastFilters)-1])
 		a.img.lastFilters = a.img.lastFilters[:len(a.img.lastFilters)-1]
 		a.apply()
 	}
