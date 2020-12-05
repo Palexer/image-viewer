@@ -37,7 +37,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderBrightness = newEditingSlider(-100, 100)
 	a.sliderBrightness.dragEndFunc = func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f))) }
 	a.editBrightness = newEditingOption(
-		"Brightness",
+		"Brightness: ",
 		a.sliderBrightness,
 		0,
 	)
@@ -45,7 +45,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderContrast = newEditingSlider(-100, 100)
 	a.sliderContrast.dragEndFunc = func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f))) }
 	a.editContrast = newEditingOption(
-		"Contrast",
+		"Contrast: ",
 		a.sliderContrast,
 		0,
 	)
@@ -53,7 +53,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderHue = newEditingSlider(-180, 180)
 	a.sliderHue.dragEndFunc = func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f))) }
 	a.editHue = newEditingOption(
-		"Hue",
+		"Hue: ",
 		a.sliderHue,
 		0,
 	)
@@ -64,7 +64,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 			float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)))
 	}
 	a.editColorBalanceR = newEditingOption(
-		"Red",
+		"Red: ",
 		a.sliderColorBalanceR,
 		0,
 	)
@@ -75,7 +75,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 			float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)))
 	}
 	a.editColorBalanceG = newEditingOption(
-		"Green",
+		"Green: ",
 		a.sliderColorBalanceG,
 		0,
 	)
@@ -86,7 +86,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 			float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)))
 	}
 	a.editColorBalanceB = newEditingOption(
-		"Blue",
+		"Blue: ",
 		a.sliderColorBalanceB,
 		0,
 	)

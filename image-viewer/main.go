@@ -1,6 +1,8 @@
 package main
 
 import (
+	"fmt"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
@@ -27,9 +29,11 @@ func newEditingSlider(min, max float64) *editingSlider {
 
 // newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
 func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
+	label := widget.NewLabel(fmt.Sprintf("%v %2.f", infoText, defaultValue))
 	slider.SetValue(defaultValue)
+	slider.OnChanged = func(f float64) { label.SetText(fmt.Sprintf("%v%2.f", infoText, slider.Value))}
 	vbox := widget.NewVBox(
-		widget.NewLabel(infoText),
+		label,
 		slider,
 	)
 	return vbox
