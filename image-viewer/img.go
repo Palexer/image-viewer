@@ -22,6 +22,11 @@ type Img struct {
 	cbRed   gift.Filter
 	cbGreen gift.Filter
 	cbBlue  gift.Filter
+	// transform
+	cropWidth  gift.Filter
+	cropHeight gift.Filter
+
+	lastFilters []gift.Filter
 }
 
 func (i *Img) init() {
@@ -32,15 +37,18 @@ func (i *Img) init() {
 func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter) {
 	a.img.gifted.Replace(*filterVar, newFilter)
 	*filterVar = newFilter
-	go func() {
-		// apply filters
-		a.img.EditedImage = image.NewRGBA(a.img.gifted.Bounds(a.img.OriginalImage.Bounds()))
-		a.img.gifted.Draw(a.img.EditedImage, a.img.OriginalImage)
+	a.img.lastFilters = append(a.img.lastFilters, newFilter)
+	go a.apply()
+}
 
-		// show new image
-		a.image.Image = a.img.EditedImage
-		a.image.Refresh()
-	}()
+func (a *App) apply() {
+	// apply filters
+	a.img.EditedImage = image.NewRGBA(a.img.gifted.Bounds(a.img.OriginalImage.Bounds()))
+	a.img.gifted.Draw(a.img.EditedImage, a.img.OriginalImage)
+
+	// show new image
+	a.image.Image = a.img.EditedImage
+	a.image.Refresh()
 }
 
 func (a *App) reset() {
@@ -55,4 +63,11 @@ func (a *App) reset() {
 	a.img.gifted.Empty()
 	a.img.EditedImage = nil
 	a.image.Image = a.img.OriginalImage
+}
+
+func (a *App) undo() {
+	if len(a.img.lastFilters) > 0 {
+		a.img.lastFilters = a.img.lastFilters[:len(a.img.lastFilters)-1]
+		a.apply()
+	}
 }
