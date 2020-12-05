@@ -1,12 +1,9 @@
 package main
 
 import (
-	"strconv"
-
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
-	"fyne.io/fyne/container"
 	"fyne.io/fyne/driver/desktop"
 	"fyne.io/fyne/widget"
 )
@@ -31,15 +28,9 @@ func newEditingSlider(min, max float64) *editingSlider {
 // newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
 func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
 	slider.SetValue(defaultValue)
-	valueLabel := widget.NewLabel("")
-	valueLabel.SetText(strconv.FormatFloat(slider.Value, 'f', 0, 64))
-	slider.OnChanged = func(f float64) { valueLabel.SetText(strconv.FormatFloat(slider.Value, 'f', 6, 64)) }
 	vbox := widget.NewVBox(
 		widget.NewLabel(infoText),
-		widget.NewHBox(
-			valueLabel,
-			slider,
-		),
+		slider,
 	)
 	return vbox
 }
@@ -51,6 +42,7 @@ type App struct {
 
 	img        Img
 	mainModKey desktop.Modifier
+	focus      bool
 
 	image *canvas.Image
 
@@ -68,16 +60,15 @@ type App struct {
 	sliderColorBalanceG *editingSlider
 	sliderColorBalanceB *editingSlider
 
-	resetBtn             *widget.Button
-	scrollEditingWidgets *container.Scroll
+	resetBtn *widget.Button
 
-	informationWidgets *container.Scroll
-	widthLabel         *widget.Label
-	heightLabel        *widget.Label
-	imgSize            *widget.Label
-	imgLastMod         *widget.Label
-	statusBar          *widget.Box
-	imagePathLabel     *widget.Label
+	split          *widget.SplitContainer
+	widthLabel     *widget.Label
+	heightLabel    *widget.Label
+	imgSize        *widget.Label
+	imgLastMod     *widget.Label
+	statusBar      *widget.Box
+	imagePathLabel *widget.Label
 }
 
 func main() {

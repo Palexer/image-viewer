@@ -8,8 +8,6 @@
 
 ## ToDo
 
-- view images in fullscreen
-- undo/redo
 - open recent images
 - disable editor / error if slider is moved if no image is opened
 - more filters/cropping options

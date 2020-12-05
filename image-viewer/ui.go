@@ -32,28 +32,8 @@ func (a *App) loadStatusBar() *widget.Box {
 	return a.statusBar
 }
 
-func (a *App) loadInformationWidgets() *container.Scroll {
-	a.widthLabel = widget.NewLabel("Width: ")
-	a.heightLabel = widget.NewLabel("Height: ")
-	a.imgSize = widget.NewLabel("Size: ")
-	a.imgLastMod = widget.NewLabel("Last modified: ")
-	a.informationWidgets = container.NewScroll(
-		widget.NewHBox(
-			widget.NewVBox(
-				widget.NewLabelWithStyle("Information", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-				a.widthLabel,
-				a.heightLabel,
-				a.imgSize,
-				a.imgLastMod,
-			),
-			widget.NewSeparator(),
-		),
-	)
-	a.informationWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
-	return a.informationWidgets
-}
-
-func (a *App) loadEditControls() *container.Scroll {
+func (a *App) loadEditorTab() *container.TabItem {
+	// editor tab
 	a.sliderBrightness = newEditingSlider(-100, 100)
 	a.sliderBrightness.dragEndFunc = func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f))) }
 	a.editBrightness = newEditingOption(
@@ -129,37 +109,42 @@ func (a *App) loadEditControls() *container.Scroll {
 	}
 
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
-
-	// hide all widgets until a file was opened
-	// a.scrollEditingWidgets.Content.Hide()
-	// a.informationWidgets.Content.Hide()
-
-	// group widgets in a scroll container
-
-	a.scrollEditingWidgets = container.NewScroll(
-		widget.NewHBox(
+	return container.NewTabItem("Editor", container.NewScroll(
+		widget.NewVBox(
+			widget.NewLabel("General"),
+			a.editBrightness,
+			a.editContrast,
+			a.editHue,
 			widget.NewSeparator(),
-			widget.NewVBox(
-				widget.NewLabelWithStyle("Editor", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-				widget.NewLabel("General"),
-				a.editBrightness,
-				a.editContrast,
-				a.editHue,
-				widget.NewSeparator(),
-				widget.NewLabel("Color Balance"),
-				a.editColorBalanceR,
-				a.editColorBalanceG,
-				a.editColorBalanceB,
-				widget.NewSeparator(),
-				widget.NewLabel("Transform"),
-				cropWidth,
-				cropHeight,
-				layout.NewSpacer(),
-				a.resetBtn,
-			),
+			widget.NewLabel("Color Balance"),
+			a.editColorBalanceR,
+			a.editColorBalanceG,
+			a.editColorBalanceB,
+			widget.NewSeparator(),
+			widget.NewLabel("Transform"),
+			cropWidth,
+			cropHeight,
+			layout.NewSpacer(),
+			a.resetBtn,
 		),
+	),
 	)
-	return a.scrollEditingWidgets
+}
+
+func (a *App) loadInformationTab() *container.TabItem {
+	a.widthLabel = widget.NewLabel("Width: ")
+	a.heightLabel = widget.NewLabel("Height: ")
+	a.imgSize = widget.NewLabel("Size: ")
+	a.imgLastMod = widget.NewLabel("Last modified: ")
+	// a.informationWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
+	return container.NewTabItem("Information", container.NewScroll(
+		widget.NewVBox(
+			a.widthLabel,
+			a.heightLabel,
+			a.imgSize,
+			a.imgLastMod,
+		),
+	))
 }
 
 func (a *App) loadMainUI() fyne.CanvasObject {
@@ -176,34 +161,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
-			fyne.NewMenuItem("Information", func() {
-				if a.informationWidgets.Visible() {
-					a.informationWidgets.Hide()
-					a.app.Preferences().SetBool("informationPanelVisible", false)
-				} else {
-					a.informationWidgets.Show()
-					a.app.Preferences().SetBool("informationPanelVisible", true)
-				}
-			}),
-			fyne.NewMenuItem("Editor", func() {
-				if a.scrollEditingWidgets.Visible() {
-					a.scrollEditingWidgets.Hide()
-					a.app.Preferences().SetBool("editorVisible", false)
-				} else {
-					a.scrollEditingWidgets.Show()
-					a.app.Preferences().SetBool("editorVisible", true)
-				}
-			}),
-			fyne.NewMenuItem("Statusbar", func() {
-				if a.statusBar.Visible() {
-					a.statusBar.Hide()
-					a.app.Preferences().SetBool("statusBarVisible", false)
-				} else {
-					a.statusBar.Show()
-					a.app.Preferences().SetBool("statusBarVisible", true)
-				}
-			}),
-			fyne.NewMenuItem("Fullscreen (Ctrl+F)", a.showFullscreen),
+			fyne.NewMenuItem("Focus Mode (Ctrl+F)", a.focusMode),
 		),
 		fyne.NewMenu("Help",
 			fyne.NewMenuItem("Help", func() {
@@ -217,11 +175,11 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.SetMainMenu(mainMenu)
 
 	// keyboard shortcuts
-	// ctrl+f for fullscreen
+	// ctrl+f for focus mode
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName:  fyne.KeyF,
 		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.showFullscreen() })
+	}, func(shortcut fyne.Shortcut) { a.focusMode() })
 
 	// ctrl+o to open file
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
@@ -251,19 +209,28 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	a.image = &canvas.Image{}
 	a.image.FillMode = canvas.ImageFillContain
 
-	layout := container.NewBorder(nil, a.loadStatusBar(), a.loadInformationWidgets(), a.loadEditControls(), a.image)
-	// container.NewHSplit()
+	a.split = container.NewHSplit(
+		a.image,
+		container.NewAppTabs(
+			a.loadInformationTab(),
+			a.loadEditorTab(),
+		),
+	)
+	a.split.SetOffset(0.85)
+	layout := container.NewBorder(nil, a.loadStatusBar(), nil, nil, a.split)
 	a.loadPreferences()
 	return layout
 }
 
-func (a *App) showFullscreen() {
-	fullWin := a.app.NewWindow("Fullscreen Image")
-	fullWin.SetContent(a.image)
-	fullWin.SetFullScreen(true)
-	fullWin.Canvas().AddShortcut(&desktop.CustomShortcut{
-		KeyName:  fyne.KeyF11,
-		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { fullWin.Close(); a.mainWin.Content().Refresh() })
-	fullWin.Show()
+func (a *App) focusMode() {
+	if !a.focus {
+		a.statusBar.Hide()
+		a.split.Hide()
+		a.mainWin.SetContent(fyne.NewContainer(a.image))
+	} else {
+		a.mainWin.SetContent(container.NewBorder(nil, a.statusBar, nil, nil, a.split))
+		a.statusBar.Show()
+		a.split.Show()
+
+	}
 }

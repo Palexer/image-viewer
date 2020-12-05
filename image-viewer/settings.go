@@ -40,15 +40,7 @@ func (a *App) loadPreferences() {
 		a.app.Settings().SetTheme(theme.DarkTheme())
 	}
 
-	// show/hide panels
-	if a.app.Preferences().BoolWithFallback("informationPanelVisible", true) == false {
-		a.informationWidgets.Hide()
-	}
-
-	if a.app.Preferences().BoolWithFallback("editorVisible", true) == false {
-		a.scrollEditingWidgets.Hide()
-	}
-
+	// show/hide statusbar
 	if a.app.Preferences().BoolWithFallback("statusBarVisible", true) == false {
 		a.statusBar.Hide()
 	}

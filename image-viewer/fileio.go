@@ -60,7 +60,7 @@ func (a *App) open(f fyne.URIReadCloser) error {
 
 	// get and display FileInfo
 	a.img.FileData, err = os.Stat(a.img.Path)
-	a.imgSize.SetText(fmt.Sprintf("Size: %.2fMb", float64(a.img.FileData.Size())/1000000))
+	a.imgSize.SetText(fmt.Sprintf("Size: %.2f Mb", float64(a.img.FileData.Size())/1000000))
 
 	modtime := a.img.FileData.ModTime()
 	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%v. %v %v", modtime.Day(), modtime.Local().Month(), modtime.Year()))
@@ -68,8 +68,6 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
 	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
-	a.scrollEditingWidgets.Content.Show()
-	a.informationWidgets.Content.Show()
 	return nil
 }
 
