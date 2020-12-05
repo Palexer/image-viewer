@@ -1,15 +1,25 @@
 package main
 
 import (
+	"strconv"
+	"strings"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/container"
 	"fyne.io/fyne/dialog"
+	"fyne.io/fyne/driver/desktop"
 	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 	"github.com/disintegration/gift"
 )
+
+// StringToInt converts a string to an integer
+func StringToInt(str string) (int, error) {
+	nonFractionalPart := strings.Split(str, ".")
+	return strconv.Atoi(nonFractionalPart[0])
+}
 
 func (a *App) loadStatusBar() *widget.Box {
 	a.imagePathLabel = widget.NewLabel("Path: ")
@@ -43,7 +53,7 @@ func (a *App) loadEditControls() *container.Scroll {
 	a.sliderBrightness = newEditingSlider(-100, 100)
 	a.sliderBrightness.dragEndFunc = func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f))) }
 	a.editBrightness = newEditingOption(
-		"Brightness: ",
+		"Brightness",
 		a.sliderBrightness,
 		0,
 	)
@@ -51,7 +61,7 @@ func (a *App) loadEditControls() *container.Scroll {
 	a.sliderContrast = newEditingSlider(-100, 100)
 	a.sliderContrast.dragEndFunc = func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f))) }
 	a.editContrast = newEditingOption(
-		"Contrast: ",
+		"Contrast",
 		a.sliderContrast,
 		0,
 	)
@@ -59,7 +69,7 @@ func (a *App) loadEditControls() *container.Scroll {
 	a.sliderHue = newEditingSlider(-180, 180)
 	a.sliderHue.dragEndFunc = func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f))) }
 	a.editHue = newEditingOption(
-		"Hue: ",
+		"Hue",
 		a.sliderHue,
 		0,
 	)
@@ -70,7 +80,7 @@ func (a *App) loadEditControls() *container.Scroll {
 			float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)))
 	}
 	a.editColorBalanceR = newEditingOption(
-		"Red: ",
+		"Red",
 		a.sliderColorBalanceR,
 		0,
 	)
@@ -81,7 +91,7 @@ func (a *App) loadEditControls() *container.Scroll {
 			float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)))
 	}
 	a.editColorBalanceG = newEditingOption(
-		"Green: ",
+		"Green",
 		a.sliderColorBalanceG,
 		0,
 	)
@@ -92,10 +102,27 @@ func (a *App) loadEditControls() *container.Scroll {
 			float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)))
 	}
 	a.editColorBalanceB = newEditingOption(
-		"Blue: ",
+		"Blue",
 		a.sliderColorBalanceB,
 		0,
 	)
+
+	cropWidth := widget.NewEntry()
+	cropWidth.SetPlaceHolder("Width: " + strconv.Itoa(a.img.OriginalImageData.Width))
+
+	cropHeight := widget.NewEntry()
+	cropHeight.SetPlaceHolder("Height: " + strconv.Itoa(a.img.OriginalImageData.Height))
+
+	cropWidth.OnChanged = func(s string) {
+		var width, height int
+		if cropHeight.Text != "" {
+			width, _ = StringToInt(cropHeight.Text)
+		} else {
+			width = a.img.OriginalImageData.Height
+		}
+		height, _ = StringToInt(s)
+		a.changeParameter(&a.img.cropWidth, gift.CropToSize(height, width, gift.CenterAnchor))
+	}
 
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
 
@@ -104,27 +131,30 @@ func (a *App) loadEditControls() *container.Scroll {
 	// a.informationWidgets.Content.Hide()
 
 	// group widgets in a scroll container
+
 	a.scrollEditingWidgets = container.NewScroll(
 		widget.NewHBox(
 			widget.NewSeparator(),
 			widget.NewVBox(
 				widget.NewLabelWithStyle("Editor", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
-				widget.NewLabel("General: "),
+				widget.NewLabel("General"),
 				a.editBrightness,
 				a.editContrast,
 				a.editHue,
 				widget.NewSeparator(),
-				widget.NewLabel("Color Balance: "),
+				widget.NewLabel("Color Balance"),
 				a.editColorBalanceR,
 				a.editColorBalanceG,
 				a.editColorBalanceB,
 				widget.NewSeparator(),
+				widget.NewLabel("Transform"),
+				cropWidth,
+				cropHeight,
 				layout.NewSpacer(),
 				a.resetBtn,
 			),
 		),
 	)
-	a.scrollEditingWidgets.SetMinSize(fyne.NewSize(130, a.mainWin.Canvas().Size().Height))
 	return a.scrollEditingWidgets
 }
 
@@ -137,6 +167,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 			fyne.NewMenuItem("Save", a.saveFile),
 		),
 		fyne.NewMenu("Edit",
+			fyne.NewMenuItem("Undo", a.undo),
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
@@ -167,9 +198,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 					a.app.Preferences().SetBool("statusBarVisible", true)
 				}
 			}),
-			fyne.NewMenuItem("Fullscreen (F11)", func() {
-
-			}),
+			fyne.NewMenuItem("Fullscreen (Ctrl+F)", a.showFullscreen),
 		),
 		fyne.NewMenu("Help",
 			fyne.NewMenuItem("Help", func() {
@@ -182,10 +211,33 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	)
 	a.mainWin.SetMainMenu(mainMenu)
 
+	// keyboard shortcuts
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyF,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.showFullscreen(); println("Ctrl+F") })
+
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyO,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.openFile(); println("Ctrl+O") })
+
 	a.image = &canvas.Image{}
 	a.image.FillMode = canvas.ImageFillContain
 
 	layout := container.NewBorder(nil, a.loadStatusBar(), a.loadInformationWidgets(), a.loadEditControls(), a.image)
+	// container.NewHSplit()
 	a.loadPreferences()
 	return layout
+}
+
+func (a *App) showFullscreen() {
+	fullWin := a.app.NewWindow("Fullscreen Image")
+	fullWin.SetContent(a.image)
+	fullWin.SetFullScreen(true)
+	fullWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyF11,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { fullWin.Close(); a.mainWin.Content().Refresh() })
+	fullWin.Show()
 }
