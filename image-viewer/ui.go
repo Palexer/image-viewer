@@ -35,12 +35,16 @@ func (a *App) loadStatusBar() *widget.Box {
 func (a *App) loadInformationWidgets() *container.Scroll {
 	a.widthLabel = widget.NewLabel("Width: ")
 	a.heightLabel = widget.NewLabel("Height: ")
+	a.imgSize = widget.NewLabel("Size: ")
+	a.imgLastMod = widget.NewLabel("Last modified: ")
 	a.informationWidgets = container.NewScroll(
 		widget.NewHBox(
 			widget.NewVBox(
 				widget.NewLabelWithStyle("Information", fyne.TextAlignLeading, fyne.TextStyle{Bold: true}),
 				a.widthLabel,
 				a.heightLabel,
+				a.imgSize,
+				a.imgLastMod,
 			),
 			widget.NewSeparator(),
 		),
@@ -163,8 +167,8 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	// main menu
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
-			fyne.NewMenuItem("Open", a.openFile),
-			fyne.NewMenuItem("Save", a.saveFile),
+			fyne.NewMenuItem("Open", a.openFileDialog),
+			fyne.NewMenuItem("Save", a.saveFileDialog),
 		),
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
@@ -223,7 +227,13 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName:  fyne.KeyO,
 		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.openFile() })
+	}, func(shortcut fyne.Shortcut) { a.openFileDialog() })
+
+	// ctrl+s to save file
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyS,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.saveFileDialog() })
 
 	// ctrl+z to undo
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
@@ -237,6 +247,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		Modifier: a.mainModKey,
 	}, func(shortcut fyne.Shortcut) { a.redo() })
 
+	// image canvas
 	a.image = &canvas.Image{}
 	a.image.FillMode = canvas.ImageFillContain
 

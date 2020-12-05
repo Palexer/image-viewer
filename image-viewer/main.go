@@ -1,10 +1,13 @@
 package main
 
 import (
+	"strconv"
+
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/container"
+	"fyne.io/fyne/driver/desktop"
 	"fyne.io/fyne/widget"
 )
 
@@ -25,12 +28,29 @@ func newEditingSlider(min, max float64) *editingSlider {
 	return editSlider
 }
 
+// newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
+func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
+	slider.SetValue(defaultValue)
+	valueLabel := widget.NewLabel("")
+	valueLabel.SetText(strconv.FormatFloat(slider.Value, 'f', 0, 64))
+	slider.OnChanged = func(f float64) { valueLabel.SetText(strconv.FormatFloat(slider.Value, 'f', 6, 64)) }
+	vbox := widget.NewVBox(
+		widget.NewLabel(infoText),
+		widget.NewHBox(
+			valueLabel,
+			slider,
+		),
+	)
+	return vbox
+}
+
 // App represents the whole application with all its windows, widgets and functions
 type App struct {
 	app     fyne.App
 	mainWin fyne.Window
 
-	img Img
+	img        Img
+	mainModKey desktop.Modifier
 
 	image *canvas.Image
 
@@ -54,18 +74,10 @@ type App struct {
 	informationWidgets *container.Scroll
 	widthLabel         *widget.Label
 	heightLabel        *widget.Label
+	imgSize            *widget.Label
+	imgLastMod         *widget.Label
 	statusBar          *widget.Box
 	imagePathLabel     *widget.Label
-}
-
-// newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
-func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
-	slider.SetValue(defaultValue)
-	vbox := widget.NewVBox(
-		widget.NewLabel(infoText),
-		slider,
-	)
-	return vbox
 }
 
 func main() {

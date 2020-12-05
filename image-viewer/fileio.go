@@ -12,7 +12,7 @@ import (
 	"fyne.io/fyne/dialog"
 )
 
-func (a *App) openFile() {
+func (a *App) openFileDialog() {
 	dialog.ShowFileOpen(func(reader fyne.URIReadCloser, err error) {
 		if err != nil {
 			dialog.ShowError(err, a.mainWin)
@@ -58,6 +58,13 @@ func (a *App) open(f fyne.URIReadCloser) error {
 		return fmt.Errorf("Unable to get image information %v", err)
 	}
 
+	// get and display FileInfo
+	a.img.FileData, err = os.Stat(a.img.Path)
+	a.imgSize.SetText(fmt.Sprintf("Size: %.2fMb", float64(a.img.FileData.Size())/1000000))
+
+	modtime := a.img.FileData.ModTime()
+	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%v. %v %v", modtime.Day(), modtime.Local().Month(), modtime.Year()))
+
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
 	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
@@ -66,7 +73,7 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	return nil
 }
 
-func (a *App) saveFile() {
+func (a *App) saveFileDialog() {
 	dialog.ShowFileSave(func(writer fyne.URIWriteCloser, err error) {
 		err = a.save(writer)
 		if err != nil {

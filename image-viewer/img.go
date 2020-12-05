@@ -2,6 +2,7 @@ package main
 
 import (
 	"image"
+	"os"
 
 	"github.com/disintegration/gift"
 )
@@ -10,6 +11,7 @@ import (
 type Img struct {
 	OriginalImage     image.Image
 	OriginalImageData image.Config
+	FileData          os.FileInfo
 	EditedImage       *image.RGBA
 	gifted            *Gifted
 	Path              string
