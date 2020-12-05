@@ -168,6 +168,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		),
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
+			fyne.NewMenuItem("Redo", a.redo),
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
@@ -212,15 +213,29 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.SetMainMenu(mainMenu)
 
 	// keyboard shortcuts
+	// ctrl+f for fullscreen
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName:  fyne.KeyF,
 		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.showFullscreen(); println("Ctrl+F") })
+	}, func(shortcut fyne.Shortcut) { a.showFullscreen() })
 
+	// ctrl+o to open file
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName:  fyne.KeyO,
 		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.openFile(); println("Ctrl+O") })
+	}, func(shortcut fyne.Shortcut) { a.openFile() })
+
+	// ctrl+z to undo
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyZ,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.undo() })
+
+	// ctrl+y to redo
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyY,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.redo() })
 
 	a.image = &canvas.Image{}
 	a.image.FillMode = canvas.ImageFillContain

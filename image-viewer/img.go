@@ -26,7 +26,8 @@ type Img struct {
 	cropWidth  gift.Filter
 	cropHeight gift.Filter
 
-	lastFilters []gift.Filter
+	lastFilters       []gift.Filter
+	lastFiltersUndone []gift.Filter
 }
 
 func (i *Img) init() {
@@ -67,8 +68,20 @@ func (a *App) reset() {
 
 func (a *App) undo() {
 	if len(a.img.lastFilters) > 0 {
-		a.img.gifted.Remove(a.img.lastFilters[len(a.img.lastFilters)-1])
+		filterToUndo := a.img.lastFilters[len(a.img.lastFilters)-1]
+		a.img.gifted.Remove(filterToUndo)
+		a.img.lastFiltersUndone = append(a.img.lastFiltersUndone, filterToUndo)
 		a.img.lastFilters = a.img.lastFilters[:len(a.img.lastFilters)-1]
+		a.apply()
+	}
+}
+
+func (a *App) redo() {
+	if len(a.img.lastFiltersUndone) > 0 {
+		filterToRedo := a.img.lastFiltersUndone[len(a.img.lastFiltersUndone)-1]
+		a.img.gifted.Add(filterToRedo)
+		a.img.lastFilters = append(a.img.lastFilters, filterToRedo)
+		a.img.lastFiltersUndone = a.img.lastFiltersUndone[:len(a.img.lastFiltersUndone)-1]
 		a.apply()
 	}
 }
