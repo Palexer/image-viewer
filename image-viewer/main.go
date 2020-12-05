@@ -31,7 +31,7 @@ func newEditingSlider(min, max float64) *editingSlider {
 func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
 	label := widget.NewLabel(fmt.Sprintf("%v %2.f", infoText, defaultValue))
 	slider.SetValue(defaultValue)
-	slider.OnChanged = func(f float64) { label.SetText(fmt.Sprintf("%v%2.f", infoText, slider.Value))}
+	slider.OnChanged = func(f float64) { label.SetText(fmt.Sprintf("%v%2.f", infoText, slider.Value)) }
 	vbox := widget.NewVBox(
 		label,
 		slider,
