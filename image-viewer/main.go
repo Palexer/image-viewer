@@ -62,10 +62,12 @@ type App struct {
 	sliderBrightness    *editingSlider
 	sliderContrast      *editingSlider
 	sliderHue           *editingSlider
+	sliderSaturation    *editingSlider
 	sliderColorBalanceR *editingSlider
 	sliderColorBalanceG *editingSlider
 	sliderColorBalanceB *editingSlider
 	sliderSepia         *editingSlider
+	sliderPixelate      *editingSlider
 
 	resetBtn *widget.Button
 

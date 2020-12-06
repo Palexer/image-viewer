@@ -59,6 +59,10 @@ func (a *App) loadEditorTab() *container.TabItem {
 		0,
 	)
 
+	a.sliderSaturation = newEditingSlider(-100, 500)
+	a.sliderSaturation.dragEndFunc = func(f float64) { a.changeParameter(&a.img.saturation, gift.Saturation(float32(f))) }
+	editSaturation := newEditingOption("Saturation: ", a.sliderSaturation, 0)
+
 	a.sliderColorBalanceR = newEditingSlider(-100, 500)
 	a.sliderColorBalanceR.dragEndFunc = func(f float64) {
 		a.changeParameter(&a.img.cbRed, gift.ColorBalance(
@@ -104,6 +108,10 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderSepia.dragEndFunc = func(f float64) { a.changeParameter(&a.img.sepia, gift.Sepia(float32(f))) }
 	editSepia := newEditingOption("Sepia: ", a.sliderSepia, 0)
 
+	a.sliderPixelate = newEditingSlider(0, 100)
+	a.sliderPixelate.dragEndFunc = func(f float64) { a.changeParameter(&a.img.pixelate, gift.Pixelate(int(f))) }
+	editPixelate := newEditingOption("Pixelate: ", a.sliderPixelate, 0)
+
 	cropWidth.OnChanged = func(s string) {
 		var width, height int
 		if cropHeight.Text != "" {
@@ -127,6 +135,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 						editBrightness,
 						editContrast,
 						editHue,
+						editSaturation,
 					),
 				),
 				widget.NewAccordionItem(
@@ -148,6 +157,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 					"Filter",
 					widget.NewVBox(
 						editSepia,
+						editPixelate,
 						grayscaleBtn,
 					),
 				),
@@ -184,12 +194,12 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	// main menu
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
-			fyne.NewMenuItem("Open (Ctrl+O)", a.openFileDialog),
-			fyne.NewMenuItem("Save (Ctrl+S)", a.saveFileDialog),
+			fyne.NewMenuItem("Open", a.openFileDialog),
+			fyne.NewMenuItem("Save", a.saveFileDialog),
 		),
 		fyne.NewMenu("Edit",
-			fyne.NewMenuItem("Undo (Ctrl+Z)", a.undo),
-			fyne.NewMenuItem("Redo (Ctrly+Y)", a.redo),
+			fyne.NewMenuItem("Undo", a.undo),
+			fyne.NewMenuItem("Redo", a.redo),
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",

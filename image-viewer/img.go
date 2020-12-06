@@ -17,11 +17,15 @@ type Img struct {
 	Path              string
 
 	// saved filters
+	// general
 	brightness gift.Filter
 	contrast   gift.Filter
 	hue        gift.Filter
-	grayscale  gift.Filter
-	sepia      gift.Filter
+	saturation gift.Filter
+	// filters
+	grayscale gift.Filter
+	sepia     gift.Filter
+	pixelate  gift.Filter
 	// color balance red, green, blue
 	cbRed   gift.Filter
 	cbGreen gift.Filter
@@ -61,14 +65,23 @@ func (a *App) apply() {
 
 func (a *App) reset() {
 	defer a.image.Refresh()
+
+	// reset values
 	a.sliderBrightness.SetValue(0)
 	a.sliderContrast.SetValue(0)
 	a.sliderHue.SetValue(0)
 	a.sliderColorBalanceR.SetValue(0)
 	a.sliderColorBalanceG.SetValue(0)
 	a.sliderColorBalanceB.SetValue(0)
+	a.sliderSepia.SetValue(0)
+	a.sliderPixelate.SetValue(0)
+	a.sliderSaturation.SetValue(0)
 
+	// clear filters
 	a.img.gifted.Empty()
+	a.img.lastFilters = nil
+	a.img.lastFiltersUndone = nil
+
 	a.img.EditedImage = nil
 	a.image.Image = a.img.OriginalImage
 }
