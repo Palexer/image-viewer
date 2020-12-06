@@ -50,19 +50,13 @@ type App struct {
 
 	image *canvas.Image
 
-	editBrightness    *widget.Box
-	editContrast      *widget.Box
-	editHue           *widget.Box
-	editColorBalanceR *widget.Box
-	editColorBalanceG *widget.Box
-	editColorBalanceB *widget.Box
-
 	sliderBrightness    *editingSlider
 	sliderContrast      *editingSlider
 	sliderHue           *editingSlider
 	sliderColorBalanceR *editingSlider
 	sliderColorBalanceG *editingSlider
 	sliderColorBalanceB *editingSlider
+	sliderSepia         *editingSlider
 
 	resetBtn *widget.Button
 

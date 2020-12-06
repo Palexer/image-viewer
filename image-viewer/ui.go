@@ -37,7 +37,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 	// editor tab
 	a.sliderBrightness = newEditingSlider(-100, 100)
 	a.sliderBrightness.dragEndFunc = func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f))) }
-	a.editBrightness = newEditingOption(
+	editBrightness := newEditingOption(
 		"Brightness: ",
 		a.sliderBrightness,
 		0,
@@ -45,7 +45,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 
 	a.sliderContrast = newEditingSlider(-100, 100)
 	a.sliderContrast.dragEndFunc = func(f float64) { a.changeParameter(&a.img.contrast, gift.Contrast(float32(f))) }
-	a.editContrast = newEditingOption(
+	editContrast := newEditingOption(
 		"Contrast: ",
 		a.sliderContrast,
 		0,
@@ -53,7 +53,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 
 	a.sliderHue = newEditingSlider(-180, 180)
 	a.sliderHue.dragEndFunc = func(f float64) { a.changeParameter(&a.img.hue, gift.Hue(float32(f))) }
-	a.editHue = newEditingOption(
+	editHue := newEditingOption(
 		"Hue: ",
 		a.sliderHue,
 		0,
@@ -64,7 +64,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 		a.changeParameter(&a.img.cbRed, gift.ColorBalance(
 			float32(f), float32(a.sliderColorBalanceG.Value), float32(a.sliderColorBalanceB.Value)))
 	}
-	a.editColorBalanceR = newEditingOption(
+	editColorBalanceR := newEditingOption(
 		"Red: ",
 		a.sliderColorBalanceR,
 		0,
@@ -75,7 +75,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 		a.changeParameter(&a.img.cbGreen, gift.ColorBalance(
 			float32(a.sliderColorBalanceR.Value), float32(f), float32(a.sliderColorBalanceB.Value)))
 	}
-	a.editColorBalanceG = newEditingOption(
+	editColorBalanceG := newEditingOption(
 		"Green: ",
 		a.sliderColorBalanceG,
 		0,
@@ -86,7 +86,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 		a.changeParameter(&a.img.cbBlue, gift.ColorBalance(
 			float32(a.sliderColorBalanceR.Value), float32(a.sliderColorBalanceG.Value), float32(f)))
 	}
-	a.editColorBalanceB = newEditingOption(
+	editColorBalanceB := newEditingOption(
 		"Blue: ",
 		a.sliderColorBalanceB,
 		0,
@@ -97,6 +97,12 @@ func (a *App) loadEditorTab() *container.TabItem {
 
 	cropHeight := widget.NewEntry()
 	cropHeight.SetPlaceHolder("Height: " + strconv.Itoa(a.img.OriginalImageData.Height))
+
+	grayscaleBtn := widget.NewButton("Grayscale", func() { a.changeParameter(&a.img.grayscale, gift.Grayscale()) })
+
+	a.sliderSepia = newEditingSlider(0, 100)
+	a.sliderSepia.dragEndFunc = func(f float64) { a.changeParameter(&a.img.sepia, gift.Sepia(float32(f))) }
+	editSepia := newEditingOption("Sepia: ", a.sliderSepia, 0)
 
 	cropWidth.OnChanged = func(s string) {
 		var width, height int
@@ -114,18 +120,22 @@ func (a *App) loadEditorTab() *container.TabItem {
 	return container.NewTabItem("Editor", container.NewScroll(
 		widget.NewVBox(
 			widget.NewLabel("General"),
-			a.editBrightness,
-			a.editContrast,
-			a.editHue,
+			editBrightness,
+			editContrast,
+			editHue,
 			widget.NewSeparator(),
 			widget.NewLabel("Color Balance"),
-			a.editColorBalanceR,
-			a.editColorBalanceG,
-			a.editColorBalanceB,
+			editColorBalanceR,
+			editColorBalanceG,
+			editColorBalanceB,
 			widget.NewSeparator(),
 			widget.NewLabel("Transform"),
 			cropWidth,
 			cropHeight,
+			widget.NewSeparator(),
+			widget.NewLabel("Filter"),
+			editSepia,
+			grayscaleBtn,
 			layout.NewSpacer(),
 			a.resetBtn,
 		),

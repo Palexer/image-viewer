@@ -20,6 +20,8 @@ type Img struct {
 	brightness gift.Filter
 	contrast   gift.Filter
 	hue        gift.Filter
+	grayscale  gift.Filter
+	sepia      gift.Filter
 	// color balance red, green, blue
 	cbRed   gift.Filter
 	cbGreen gift.Filter
