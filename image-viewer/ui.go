@@ -117,30 +117,44 @@ func (a *App) loadEditorTab() *container.TabItem {
 
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
 	a.resetBtn.Disable()
+
 	return container.NewTabItem("Editor", container.NewScroll(
 		widget.NewVBox(
-			widget.NewLabel("General"),
-			editBrightness,
-			editContrast,
-			editHue,
-			widget.NewSeparator(),
-			widget.NewLabel("Color Balance"),
-			editColorBalanceR,
-			editColorBalanceG,
-			editColorBalanceB,
-			widget.NewSeparator(),
-			widget.NewLabel("Transform"),
-			cropWidth,
-			cropHeight,
-			widget.NewSeparator(),
-			widget.NewLabel("Filter"),
-			editSepia,
-			grayscaleBtn,
+			widget.NewAccordion(
+				widget.NewAccordionItem(
+					"General",
+					widget.NewVBox(
+						editBrightness,
+						editContrast,
+						editHue,
+					),
+				),
+				widget.NewAccordionItem(
+					"Color Balance",
+					widget.NewVBox(
+						editColorBalanceR,
+						editColorBalanceG,
+						editColorBalanceB,
+					),
+				),
+				widget.NewAccordionItem(
+					"Transform",
+					widget.NewVBox(
+						cropWidth,
+						cropHeight,
+					),
+				),
+				widget.NewAccordionItem(
+					"Filter",
+					widget.NewVBox(
+						editSepia,
+						grayscaleBtn,
+					),
+				),
+			),
 			layout.NewSpacer(),
 			a.resetBtn,
-		),
-	),
-	)
+		)))
 }
 
 func (a *App) loadInformationTab() *container.TabItem {
