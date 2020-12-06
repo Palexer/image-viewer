@@ -1,6 +1,7 @@
 package main
 
 import (
+	"runtime"
 	"strconv"
 	"strings"
 
@@ -150,6 +151,12 @@ func (a *App) loadInformationTab() *container.TabItem {
 
 func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.SetMaster()
+	// set main mod key to super on darwin hosts, else set it to ctrl
+	if runtime.GOOS == "darwin" {
+		a.mainModKey = desktop.SuperModifier
+	} else {
+		a.mainModKey = desktop.ControlModifier
+	}
 	// main menu
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",

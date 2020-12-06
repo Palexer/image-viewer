@@ -1,9 +1,6 @@
 package main
 
 import (
-	"runtime"
-
-	"fyne.io/fyne/driver/desktop"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -43,12 +40,5 @@ func (a *App) loadPreferences() {
 	// show/hide statusbar
 	if a.app.Preferences().BoolWithFallback("statusBarVisible", true) == false {
 		a.statusBar.Hide()
-	}
-
-	// set main mod key to super on darwin hosts, else set it to ctrl
-	if runtime.GOOS == "darwin" {
-		a.mainModKey = desktop.SuperModifier
-	} else {
-		a.mainModKey = desktop.ControlModifier
 	}
 }
