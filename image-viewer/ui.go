@@ -109,6 +109,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 	}
 
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
+	a.resetBtn.Disable()
 	return container.NewTabItem("Editor", container.NewScroll(
 		widget.NewVBox(
 			widget.NewLabel("General"),

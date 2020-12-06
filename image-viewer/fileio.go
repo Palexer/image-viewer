@@ -4,9 +4,11 @@ import (
 	"errors"
 	"fmt"
 	"image"
+	"image/gif"
 	"image/jpeg"
 	"image/png"
 	"os"
+	"strings"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
@@ -63,11 +65,16 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	a.imgSize.SetText(fmt.Sprintf("Size: %.2f Mb", float64(a.img.FileData.Size())/1000000))
 
 	modtime := a.img.FileData.ModTime()
-	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%v. %v %v", modtime.Day(), modtime.Local().Month(), modtime.Year()))
+	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%v-%v-%v", modtime.Year(), int(modtime.Month()), modtime.Day()))
 
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
 	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
+
+	a.mainWin.SetTitle(fmt.Sprintf("Image Viewer - %v", (strings.Split(a.img.Path, "/")[len(strings.Split(a.img.Path, "/"))-1])))
+
+	// activate widgets
+	a.resetBtn.Enable()
 	return nil
 }
 
@@ -83,16 +90,18 @@ func (a *App) saveFileDialog() {
 
 func (a *App) save(writer fyne.URIWriteCloser) error {
 	if writer == nil {
-		return errors.New("cancelled")
+		return nil
 	}
 	switch writer.URI().Extension() {
 	case ".jpeg":
 		jpeg.Encode(writer, a.img.EditedImage, nil)
 	case ".png":
 		png.Encode(writer, a.img.EditedImage)
+	case ".gif":
+		gif.Encode(writer, a.img.EditedImage, nil)
 	default:
 		os.Remove(writer.URI().String()[7:])
-		return errors.New("unsupported file extension\n supported extensions: .jpeg, .png")
+		return errors.New("unsupported file extension\n supported extensions: .jpeg, .png, .gif")
 	}
 	return nil
 }
