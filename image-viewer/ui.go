@@ -184,23 +184,23 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	// main menu
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
-			fyne.NewMenuItem("Open", a.openFileDialog),
-			fyne.NewMenuItem("Save", a.saveFileDialog),
+			fyne.NewMenuItem("Open (Ctrl+O)", a.openFileDialog),
+			fyne.NewMenuItem("Save (Ctrl+S)", a.saveFileDialog),
 		),
 		fyne.NewMenu("Edit",
-			fyne.NewMenuItem("Undo", a.undo),
-			fyne.NewMenuItem("Redo", a.redo),
+			fyne.NewMenuItem("Undo (Ctrl+Z)", a.undo),
+			fyne.NewMenuItem("Redo (Ctrly+Y)", a.redo),
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
 			fyne.NewMenuItem("Focus Mode (Ctrl+F)", a.focusMode),
 		),
 		fyne.NewMenu("Help",
-			fyne.NewMenuItem("Help", func() {
-
-			}),
 			fyne.NewMenuItem("About", func() {
-				dialog.ShowInformation("About", "A simple image viewer with editing functionality", a.mainWin)
+				dialog.ShowCustom("About", "Ok", widget.NewVBox(
+					widget.NewLabel("A simple image viewer with some editing functionality."),
+					widget.NewHyperlink("Help and more information on Github", parseURL("https://github.com/Palexer/image-viewer")),
+				), a.mainWin)
 			}),
 		),
 	)
@@ -237,6 +237,12 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		Modifier: a.mainModKey,
 	}, func(shortcut fyne.Shortcut) { a.redo() })
 
+	// ctrl+q to quit application
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyQ,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.app.Quit() })
+
 	// image canvas
 	a.image = &canvas.Image{}
 	a.image.FillMode = canvas.ImageFillContain
@@ -248,7 +254,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 			a.loadEditorTab(),
 		),
 	)
-	a.split.SetOffset(0.85)
+	a.split.SetOffset(0.90)
 	layout := container.NewBorder(nil, a.loadStatusBar(), nil, nil, a.split)
 	a.loadPreferences()
 	return layout

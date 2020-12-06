@@ -2,6 +2,7 @@ package main
 
 import (
 	"fmt"
+	"net/url"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
@@ -37,6 +38,14 @@ func newEditingOption(infoText string, slider *editingSlider, defaultValue float
 		slider,
 	)
 	return vbox
+}
+
+func parseURL(urlStr string) *url.URL {
+	link, err := url.Parse(urlStr)
+	if err != nil {
+		fyne.LogError("Could not parse URL", err)
+	}
+	return link
 }
 
 // App represents the whole application with all its windows, widgets and functions

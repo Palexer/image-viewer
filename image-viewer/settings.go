@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fyne.io/fyne/layout"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -24,6 +25,9 @@ func (a *App) loadSettingsUI() {
 			widget.NewLabel("Theme"),
 			themeSelector,
 		),
+		layout.NewSpacer(),
+		widget.NewLabel("v1.0 | License: MIT"),
+		widget.NewHyperlink("Github (source code and more information)", parseURL("https://github.com/Palexer/image-viewer")),
 	))
 	winSettings.Show()
 }
