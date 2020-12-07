@@ -280,10 +280,11 @@ func (a *App) focusMode() {
 		a.statusBar.Hide()
 		a.split.Hide()
 		a.mainWin.SetContent(fyne.NewContainer(a.image))
+        a.focus = true
 	} else {
-		a.mainWin.SetContent(container.NewBorder(nil, a.statusBar, nil, nil, a.split))
-		a.statusBar.Show()
+        a.statusBar.Show()
 		a.split.Show()
-
+		a.mainWin.SetContent(container.NewBorder(nil, a.statusBar, nil, nil, a.split))
+        a.focus = false
 	}
 }
