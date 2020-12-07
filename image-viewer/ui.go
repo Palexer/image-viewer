@@ -33,8 +33,8 @@ func (a *App) loadStatusBar() *widget.Box {
 	return a.statusBar
 }
 
+// loadEditorTab returns the editor tab
 func (a *App) loadEditorTab() *container.TabItem {
-	// editor tab
 	a.sliderBrightness = newEditingSlider(-100, 100)
 	a.sliderBrightness.dragEndFunc = func(f float64) { a.changeParameter(&a.img.brightness, gift.Brightness(float32(f))) }
 	editBrightness := newEditingOption(
@@ -112,6 +112,10 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderPixelate.dragEndFunc = func(f float64) { a.changeParameter(&a.img.pixelate, gift.Pixelate(int(f))) }
 	editPixelate := newEditingOption("Pixelate: ", a.sliderPixelate, 0)
 
+	a.sliderBlur = newEditingSlider(0, 100)
+	a.sliderBlur.dragEndFunc = func(f float64) { a.changeParameter(&a.img.blur, gift.GaussianBlur(float32(f))) }
+	editBlur := newEditingOption("Blur: ", a.sliderBlur, 0)
+
 	cropWidth.OnChanged = func(s string) {
 		var width, height int
 		if cropHeight.Text != "" {
@@ -157,6 +161,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 					"Filter",
 					widget.NewVBox(
 						editSepia,
+						editBlur,
 						editPixelate,
 						grayscaleBtn,
 					),

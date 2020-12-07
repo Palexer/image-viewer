@@ -26,6 +26,7 @@ type Img struct {
 	grayscale gift.Filter
 	sepia     gift.Filter
 	pixelate  gift.Filter
+	blur      gift.Filter
 	// color balance red, green, blue
 	cbRed   gift.Filter
 	cbGreen gift.Filter
@@ -76,6 +77,7 @@ func (a *App) reset() {
 	a.sliderSepia.SetValue(0)
 	a.sliderPixelate.SetValue(0)
 	a.sliderSaturation.SetValue(0)
+	a.sliderBlur.SetValue(0)
 
 	// clear filters
 	a.img.gifted.Empty()
