@@ -96,11 +96,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 		0,
 	)
 
-	cropWidth := widget.NewEntry()
-	cropWidth.SetPlaceHolder("Width: " + strconv.Itoa(a.img.OriginalImageData.Width))
-
-	cropHeight := widget.NewEntry()
-	cropHeight.SetPlaceHolder("Height: " + strconv.Itoa(a.img.OriginalImageData.Height))
+	rotate90Btn := widget.NewButton("Rotate 90°", func() { a.addParameter(gift.Rotate90()) })
 
 	grayscaleBtn := widget.NewButton("Grayscale", func() { a.changeParameter(&a.img.grayscale, gift.Grayscale()) })
 
@@ -115,17 +111,6 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderBlur = newEditingSlider(0, 100)
 	a.sliderBlur.dragEndFunc = func(f float64) { a.changeParameter(&a.img.blur, gift.GaussianBlur(float32(f))) }
 	editBlur := newEditingOption("Blur: ", a.sliderBlur, 0)
-
-	cropWidth.OnChanged = func(s string) {
-		var width, height int
-		if cropHeight.Text != "" {
-			width, _ = StringToInt(cropHeight.Text)
-		} else {
-			width = a.img.OriginalImageData.Height
-		}
-		height, _ = StringToInt(s)
-		a.changeParameter(&a.img.cropWidth, gift.CropToSize(height, width, gift.CenterAnchor))
-	}
 
 	a.resetBtn = widget.NewButtonWithIcon("Reset All", theme.ContentClearIcon(), a.reset)
 	a.resetBtn.Disable()
@@ -153,8 +138,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 				widget.NewAccordionItem(
 					"Transform",
 					widget.NewVBox(
-						cropWidth,
-						cropHeight,
+						rotate90Btn,
 					),
 				),
 				widget.NewAccordionItem(
@@ -280,11 +264,11 @@ func (a *App) focusMode() {
 		a.statusBar.Hide()
 		a.split.Hide()
 		a.mainWin.SetContent(fyne.NewContainer(a.image))
-        a.focus = true
-	} else {
-        a.statusBar.Show()
+		a.focus = true
+
+		a.statusBar.Show()
 		a.split.Show()
 		a.mainWin.SetContent(container.NewBorder(nil, a.statusBar, nil, nil, a.split))
-        a.focus = false
+		a.focus = false
 	}
 }

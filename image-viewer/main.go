@@ -69,7 +69,7 @@ type App struct {
 	sliderSepia         *editingSlider
 	sliderPixelate      *editingSlider
 	sliderBlur          *editingSlider
-
+	
 	resetBtn *widget.Button
 
 	split          *widget.SplitContainer

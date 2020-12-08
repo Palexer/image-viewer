@@ -54,6 +54,15 @@ func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter) {
 	go a.apply()
 }
 
+func (a *App) addParameter(filter gift.Filter) {
+	if a.img.OriginalImage == nil {
+		return
+	}
+	a.img.gifted.Add(filter)
+	a.img.lastFilters = append(a.img.lastFilters, filter)
+	go a.apply()
+}
+
 func (a *App) apply() {
 	// apply filters
 	a.img.EditedImage = image.NewRGBA(a.img.gifted.Bounds(a.img.OriginalImage.Bounds()))
