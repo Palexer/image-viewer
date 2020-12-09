@@ -10,6 +10,7 @@
 
 - open recent images
 - undo/redo: change parameter values + reset if new image was opened
+- don't do two edits simultanously -> error
 
 ## License
 

@@ -97,6 +97,8 @@ func (a *App) loadEditorTab() *container.TabItem {
 	)
 
 	rotate90Btn := widget.NewButton("Rotate 90°", func() { a.addParameter(gift.Rotate90()) })
+	flipVerticalBtn := widget.NewButton("Flip Vertically", func() { a.addParameter(gift.FlipVertical()) })
+	flipHorizontalBtn := widget.NewButton("Flip Horizontally", func() { a.addParameter(gift.FlipHorizontal()) })
 
 	grayscaleBtn := widget.NewButton("Grayscale", func() { a.changeParameter(&a.img.grayscale, gift.Grayscale()) })
 
@@ -135,6 +137,8 @@ func (a *App) loadEditorTab() *container.TabItem {
 					"Transform",
 					widget.NewVBox(
 						rotate90Btn,
+						flipHorizontalBtn,
+						flipVerticalBtn,
 					),
 				),
 				widget.NewAccordionItem(
