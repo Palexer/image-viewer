@@ -67,9 +67,8 @@ type App struct {
 	sliderColorBalanceG *editingSlider
 	sliderColorBalanceB *editingSlider
 	sliderSepia         *editingSlider
-	sliderPixelate      *editingSlider
 	sliderBlur          *editingSlider
-	
+
 	resetBtn *widget.Button
 
 	split          *widget.SplitContainer

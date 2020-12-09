@@ -104,10 +104,6 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.sliderSepia.dragEndFunc = func(f float64) { a.changeParameter(&a.img.sepia, gift.Sepia(float32(f))) }
 	editSepia := newEditingOption("Sepia: ", a.sliderSepia, 0)
 
-	a.sliderPixelate = newEditingSlider(0, 100)
-	a.sliderPixelate.dragEndFunc = func(f float64) { a.changeParameter(&a.img.pixelate, gift.Pixelate(int(f))) }
-	editPixelate := newEditingOption("Pixelate: ", a.sliderPixelate, 0)
-
 	a.sliderBlur = newEditingSlider(0, 100)
 	a.sliderBlur.dragEndFunc = func(f float64) { a.changeParameter(&a.img.blur, gift.GaussianBlur(float32(f))) }
 	editBlur := newEditingOption("Blur: ", a.sliderBlur, 0)
@@ -146,7 +142,6 @@ func (a *App) loadEditorTab() *container.TabItem {
 					widget.NewVBox(
 						editSepia,
 						editBlur,
-						editPixelate,
 						grayscaleBtn,
 					),
 				),

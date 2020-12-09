@@ -9,7 +9,6 @@
 ## ToDo
 
 - open recent images
-- more filters/cropping options
 - undo/redo: change parameter values + reset if new image was opened
 
 ## License

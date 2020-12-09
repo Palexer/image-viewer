@@ -74,6 +74,7 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	a.mainWin.SetTitle(fmt.Sprintf("Image Viewer - %v", (strings.Split(a.img.Path, "/")[len(strings.Split(a.img.Path, "/"))-1])))
 
 	// activate widgets
+	a.reset()
 	a.resetBtn.Enable()
 	return nil
 }

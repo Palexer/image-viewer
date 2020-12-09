@@ -20,20 +20,19 @@ type Img struct {
 	// general
 	brightness gift.Filter
 	contrast   gift.Filter
+	gamma      gift.Filter
 	hue        gift.Filter
 	saturation gift.Filter
+
 	// filters
 	grayscale gift.Filter
 	sepia     gift.Filter
-	pixelate  gift.Filter
 	blur      gift.Filter
+
 	// color balance red, green, blue
 	cbRed   gift.Filter
 	cbGreen gift.Filter
 	cbBlue  gift.Filter
-	// transform
-	cropWidth  gift.Filter
-	cropHeight gift.Filter
 
 	lastFilters       []gift.Filter
 	lastFiltersUndone []gift.Filter
@@ -84,7 +83,6 @@ func (a *App) reset() {
 	a.sliderColorBalanceG.SetValue(0)
 	a.sliderColorBalanceB.SetValue(0)
 	a.sliderSepia.SetValue(0)
-	a.sliderPixelate.SetValue(0)
 	a.sliderSaturation.SetValue(0)
 	a.sliderBlur.SetValue(0)
 
