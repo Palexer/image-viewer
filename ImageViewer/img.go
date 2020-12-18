@@ -47,10 +47,12 @@ func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter) {
 	if a.img.OriginalImage == nil {
 		return
 	}
+
 	a.img.gifted.Replace(*filterVar, newFilter)
 	*filterVar = newFilter
 	a.img.lastFilters = append(a.img.lastFilters, newFilter)
 	go a.apply()
+
 }
 
 func (a *App) addParameter(filter gift.Filter) {
