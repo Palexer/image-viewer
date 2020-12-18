@@ -15,6 +15,9 @@ type Img struct {
 	EditedImage       *image.RGBA
 	gifted            *Gifted
 	Path              string
+	ImagesInFolder    []string
+	index             int
+	Directory         string
 
 	// saved filters
 	// general

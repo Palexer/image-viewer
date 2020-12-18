@@ -1,6 +1,7 @@
 package main
 
 import (
+	"os"
 	"runtime"
 	"strconv"
 	"strings"
@@ -18,17 +19,52 @@ import (
 
 // StringToInt converts a string to an integer
 func StringToInt(str string) (int, error) {
-	nonFractionalPart := strings.Split(str, ".")
-	return strconv.Atoi(nonFractionalPart[0])
+	return strconv.Atoi(strings.Split(str, ".")[0])
+}
+
+func (a *App) nextImage(forward bool) {
+	if a.img.OriginalImage == nil || len(a.img.ImagesInFolder) < 2 {
+		return
+	}
+
+	if forward {
+		if a.img.index == len(a.img.ImagesInFolder)-1 {
+			return
+		}
+		a.img.index++
+	} else {
+		if a.img.index == 0 {
+			return
+		}
+		a.img.index--
+	}
+
+	file, err := os.Open(a.img.Directory + "/" + a.img.ImagesInFolder[a.img.index])
+	if err != nil {
+		dialog.ShowError(err, a.mainWin)
+		return
+	}
+	a.open(*file)
 }
 
 func (a *App) loadStatusBar() *widget.Box {
 	a.imagePathLabel = widget.NewLabel("Path: ")
+	a.leftArrow = widget.NewButtonWithIcon("", theme.NavigateBackIcon(), func() {
+		a.nextImage(false)
+	})
+
+	a.rightArrow = widget.NewButtonWithIcon("", theme.NavigateNextIcon(), func() {
+		a.nextImage(true)
+	})
+	a.leftArrow.Disable()
+	a.rightArrow.Disable()
 	a.statusBar = widget.NewVBox(
 		widget.NewSeparator(),
 		widget.NewHBox(
 			a.imagePathLabel,
 			layout.NewSpacer(),
+			a.leftArrow,
+			a.rightArrow,
 		))
 	return a.statusBar
 }
@@ -240,6 +276,16 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		KeyName:  fyne.KeyQ,
 		Modifier: a.mainModKey,
 	}, func(shortcut fyne.Shortcut) { a.app.Quit() })
+
+	// move forward/back within the current folder of images
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyLeft,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.nextImage(false) })
+	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
+		KeyName:  fyne.KeyRight,
+		Modifier: a.mainModKey,
+	}, func(shortcut fyne.Shortcut) { a.nextImage(true) })
 
 	// image canvas
 	a.image = &canvas.Image{}

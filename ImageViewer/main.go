@@ -78,6 +78,13 @@ type App struct {
 	imgLastMod     *widget.Label
 	statusBar      *widget.Box
 	imagePathLabel *widget.Label
+	leftArrow      *widget.Button
+	rightArrow     *widget.Button
+}
+
+func (a *App) init() {
+	a.img = Img{}
+	a.img.init()
 }
 
 func main() {
@@ -86,6 +93,7 @@ func main() {
 	a.SetIcon(resourceIconPng)
 	w.SetIcon(resourceIconPng)
 	ui := &App{app: a, mainWin: w}
+	ui.init()
 	w.SetContent(ui.loadMainUI())
 	w.Resize(fyne.NewSize(1380, 870))
 	w.ShowAndRun()

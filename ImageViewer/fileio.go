@@ -8,6 +8,7 @@ import (
 	"image/jpeg"
 	"image/png"
 	"os"
+	"path/filepath"
 	"strings"
 
 	"fyne.io/fyne"
@@ -24,7 +25,12 @@ func (a *App) openFileDialog() {
 			return
 		}
 
-		err = a.open(reader)
+		file, err := os.Open(reader.URI().String()[7:])
+		if err != nil {
+			dialog.ShowError(err, a.mainWin)
+			return
+		}
+		err = a.open(*file)
 		if err != nil {
 			dialog.ShowError(err, a.mainWin)
 			return
@@ -33,41 +39,52 @@ func (a *App) openFileDialog() {
 	}, a.mainWin)
 }
 
-func (a *App) open(f fyne.URIReadCloser) error {
-	defer f.Close()
-	if f == nil {
-		return errors.New("cancelled")
-	}
-
-	// init Img
-	a.img = Img{}
-	a.img.init()
+func (a *App) open(file os.File) error {
+	// defer file.Close()
+	// if file == nil {
+	// 	return errors.New("cancelled")
+	// }
 
 	// decode and update the image + get image path
 	var err error
-	a.img.OriginalImage, _, err = image.Decode(f)
+	a.img.OriginalImage, _, err = image.Decode(&file)
 	if err != nil {
 		return fmt.Errorf("Unable to decode image %v", err)
 	}
-	a.img.Path = f.URI().String()[7:]
+	a.img.Path = file.Name()
 	a.image.Image = a.img.OriginalImage
 	a.image.Refresh()
 
 	// get width and height of the image
-	reader, err := os.Open(a.img.Path)
-	a.img.OriginalImageData, _, _ = image.DecodeConfig(reader)
-	if err != nil {
-		return fmt.Errorf("Unable to get image information %v", err)
-	}
+	a.img.OriginalImageData, _, _ = image.DecodeConfig(&file)
 
 	// get and display FileInfo
 	a.img.FileData, err = os.Stat(a.img.Path)
 	a.imgSize.SetText(fmt.Sprintf("Size: %.2f Mb", float64(a.img.FileData.Size())/1000000))
 
 	modtime := a.img.FileData.ModTime()
-	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%v-%v-%v", modtime.Year(), int(modtime.Month()), modtime.Day()))
+	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%v-%v-%v", modtime.Year(), int(modtime.Month()), modtime.Day())) // use modstring instead
 
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
+
+	// save all images from folder for next/back
+
+	a.img.Directory = filepath.Dir(file.Name())
+	openFolder, _ := os.Open(a.img.Directory)
+	a.img.ImagesInFolder, _ = openFolder.Readdirnames(0)
+
+	// filter out image files
+	imgList := []string{}
+	for i, v := range a.img.ImagesInFolder {
+		if strings.HasSuffix(v, ".png") || strings.HasSuffix(v, ".jpg") || strings.HasSuffix(v, ".jpeg") || strings.HasSuffix(v, ".gif") {
+			imgList = append(imgList, v)
+			if file.Name() == v {
+				a.img.index = i
+			}
+		}
+	}
+	a.img.ImagesInFolder = imgList
+
 	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
 
@@ -76,6 +93,8 @@ func (a *App) open(f fyne.URIReadCloser) error {
 	// activate widgets
 	a.reset()
 	a.resetBtn.Enable()
+	a.leftArrow.Enable()
+	a.rightArrow.Enable()
 	return nil
 }
 
