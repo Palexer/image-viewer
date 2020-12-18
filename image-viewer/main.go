@@ -83,6 +83,8 @@ type App struct {
 func main() {
 	a := app.NewWithID("io.github.palexer")
 	w := a.NewWindow("Image Viewer")
+	a.SetIcon(resourceIconPng)
+	w.SetIcon(resourceIconPng)
 	ui := &App{app: a, mainWin: w}
 	w.SetContent(ui.loadMainUI())
 	w.Resize(fyne.NewSize(1380, 870))
