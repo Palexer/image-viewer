@@ -44,7 +44,7 @@ func (a *App) nextImage(forward bool) {
 		dialog.ShowError(err, a.mainWin)
 		return
 	}
-	a.open(*file)
+	a.open(file, false)
 }
 
 func (a *App) loadStatusBar() *widget.Box {
@@ -219,7 +219,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
 			fyne.NewMenuItem("Open", a.openFileDialog),
-			fyne.NewMenuItem("Save", a.saveFileDialog),
+			fyne.NewMenuItem("Save As", a.saveFileDialog),
 		),
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
@@ -310,7 +310,7 @@ func (a *App) focusMode() {
 		a.split.Hide()
 		a.mainWin.SetContent(fyne.NewContainer(a.image))
 		a.focus = true
-
+	} else {
 		a.statusBar.Show()
 		a.split.Show()
 		a.mainWin.SetContent(container.NewBorder(nil, a.statusBar, nil, nil, a.split))
