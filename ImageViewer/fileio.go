@@ -31,6 +31,7 @@ func (a *App) openFileDialog() {
 			dialog.ShowError(err, a.mainWin)
 			return
 		}
+
 		err = a.open(file, true)
 		if err != nil {
 			dialog.ShowError(err, a.mainWin)
@@ -57,9 +58,6 @@ func (a *App) open(file *os.File, dialog bool) error {
 	a.img.Path = file.Name()
 	a.image.Image = a.img.OriginalImage
 	a.image.Refresh()
-
-	// get width and height of the image
-	a.img.OriginalImageData, _, _ = image.DecodeConfig(file)
 
 	// get and display FileInfo
 	a.img.FileData, err = os.Stat(a.img.Path)
@@ -89,8 +87,8 @@ func (a *App) open(file *os.File, dialog bool) error {
 		a.img.ImagesInFolder = imgList
 	}
 
-	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImageData.Width))
-	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImageData.Height))
+	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImage.Bounds().Max.X))
+	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImage.Bounds().Max.Y))
 
 	a.mainWin.SetTitle(fmt.Sprintf("Image Viewer - %v", (strings.Split(a.img.Path, "/")[len(strings.Split(a.img.Path, "/"))-1])))
 

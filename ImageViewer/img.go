@@ -9,15 +9,14 @@ import (
 
 // Img is used for the whole image editing process
 type Img struct {
-	OriginalImage     image.Image
-	OriginalImageData image.Config
-	FileData          os.FileInfo
-	EditedImage       *image.RGBA
-	gifted            *Gifted
-	Path              string
-	ImagesInFolder    []string
-	index             int
-	Directory         string
+	OriginalImage  image.Image
+	FileData       os.FileInfo
+	EditedImage    *image.RGBA
+	gifted         *Gifted
+	Path           string
+	ImagesInFolder []string
+	index          int
+	Directory      string
 
 	// saved filters
 	// general

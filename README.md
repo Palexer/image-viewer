@@ -10,7 +10,6 @@
 
 - open recent images
 - undo/redo: change parameter values + reset if new image was opened
-- fix width/height display + focus mode
 
 ## License
 
