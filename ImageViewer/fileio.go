@@ -45,9 +45,6 @@ func (a *App) openFileDialog() {
 
 func (a *App) open(file *os.File, dialog bool) error {
 	defer file.Close()
-	// if file == nil {
-	// 	return errors.New("cancelled")
-	// }
 
 	// decode and update the image + get image path
 	var err error
@@ -91,6 +88,10 @@ func (a *App) open(file *os.File, dialog bool) error {
 	a.heightLabel.SetText(fmt.Sprintf("Height: %dpx", a.img.OriginalImage.Bounds().Max.Y))
 
 	a.mainWin.SetTitle(fmt.Sprintf("Image Viewer - %v", (strings.Split(a.img.Path, "/")[len(strings.Split(a.img.Path, "/"))-1])))
+
+	// append to last opened images
+	a.lastOpened = append(a.lastOpened, file.Name())
+	a.app.Preferences().SetString("lastOpened", strings.Join(a.lastOpened, ","))
 
 	// activate widgets
 	a.reset()

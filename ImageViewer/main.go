@@ -3,6 +3,7 @@ package main
 import (
 	"fmt"
 	"net/url"
+	"strings"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
@@ -56,6 +57,7 @@ type App struct {
 	img        Img
 	mainModKey desktop.Modifier
 	focus      bool
+	lastOpened []string
 
 	image *canvas.Image
 
@@ -85,6 +87,7 @@ type App struct {
 func (a *App) init() {
 	a.img = Img{}
 	a.img.init()
+	a.lastOpened = strings.Split(a.app.Preferences().String("lastOpened"), ",")
 }
 
 func main() {

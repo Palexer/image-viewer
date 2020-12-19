@@ -2,9 +2,8 @@ package main
 
 import (
 	"os"
+	"path/filepath"
 	"runtime"
-	"strconv"
-	"strings"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
@@ -17,9 +16,20 @@ import (
 	"github.com/disintegration/gift"
 )
 
-// StringToInt converts a string to an integer
-func StringToInt(str string) (int, error) {
-	return strconv.Atoi(strings.Split(str, ".")[0])
+func removeDuplicates(elements []string) []string {
+	// Use map to record duplicates as we find them.
+	encountered := map[string]bool{}
+	result := []string{}
+
+	for i := range elements {
+		if !encountered[elements[i]] {
+			// Record this element as an encountered element.
+			encountered[elements[i]] = true
+			// Append to result slice.
+			result = append(result, elements[i])
+		}
+	}
+	return result
 }
 
 func (a *App) nextImage(forward bool) {
@@ -207,6 +217,27 @@ func (a *App) loadInformationTab() *container.TabItem {
 	))
 }
 
+func (a *App) loadRecentMenu() *fyne.Menu {
+	var items []*fyne.MenuItem
+	menu := &fyne.Menu{Label: "recent"}
+
+	// reverse slice
+	for i, j := 0, len(a.lastOpened)-1; i < j; i, j = i+1, j-1 {
+		a.lastOpened[i], a.lastOpened[j] = a.lastOpened[j], a.lastOpened[i]
+	}
+	// remove dublicates
+	a.lastOpened = removeDuplicates(a.lastOpened)
+
+	for _, item := range a.lastOpened {
+		items = append(items, fyne.NewMenuItem(filepath.Base(item), func() {
+			file, _ := os.Open(item)
+			a.open(file, false)
+		}))
+	}
+	menu.Items = items
+	return menu
+}
+
 func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.SetMaster()
 	// set main mod key to super on darwin hosts, else set it to ctrl
@@ -216,10 +247,14 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		a.mainModKey = desktop.ControlModifier
 	}
 	// main menu
+	recent := fyne.NewMenuItem("Open recent", nil)
+	recent.ChildMenu = a.loadRecentMenu()
+
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
 			fyne.NewMenuItem("Open", a.openFileDialog),
 			fyne.NewMenuItem("Save As", a.saveFileDialog),
+			recent,
 		),
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
