@@ -99,7 +99,7 @@ func main() {
 	ui := &App{app: a, mainWin: w}
 	ui.init()
 	w.SetContent(ui.loadMainUI())
-	if os.Args[1] != "" {
+	if len(os.Args) > 1 {
 		file, err := os.Open(os.Args[1])
 		if err != nil {
 			fmt.Printf("error while opening the file: %v\n", err)
