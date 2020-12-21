@@ -93,6 +93,10 @@ func (a *App) open(file *os.File, folder bool) error {
 	a.lastOpened = append(a.lastOpened, file.Name())
 	a.app.Preferences().SetString("lastOpened", strings.Join(a.lastOpened, ","))
 
+	// reset editing history
+	a.img.lastFilters = nil
+	a.img.lastFiltersUndone = nil
+
 	// activate widgets
 	a.reset()
 	a.resetBtn.Enable()
