@@ -5,11 +5,12 @@
 - Language: Go
 - UI framework: fyne
 - Image processing backend: gift
+- Cross compiling: fyne-cross
 
 ## ToDo
 
-- open recent images
 - undo/redo: change parameter values + reset if new image was opened
+- remove dublicates in recent images
 
 ## License
 

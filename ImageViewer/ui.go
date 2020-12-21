@@ -222,9 +222,8 @@ func (a *App) loadRecentMenu() *fyne.Menu {
 	menu := &fyne.Menu{Label: "recent"}
 
 	// reverse slice
-	for i, j := 0, len(a.lastOpened)-1; i < j; i, j = i+1, j-1 {
-		a.lastOpened[i], a.lastOpened[j] = a.lastOpened[j], a.lastOpened[i]
-	}
+	/* code */
+
 	// remove dublicates
 	a.lastOpened = removeDuplicates(a.lastOpened)
 
