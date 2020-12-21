@@ -1,4 +1,10 @@
-# Image Viewer
+<img src="ImageViewer/data/icon.png" width=32 height=32> 
+
+# Image Viewer 
+
+## Screenshot
+
+<img src="screenshot.png" width=75% height=75%>
 
 ## Used Tools
 
@@ -9,8 +15,9 @@
 
 ## ToDo
 
-- undo/redo: change parameter values + reset if new image was opened
-- remove dublicates in recent images
+- undo/redo: change parameter values
+- fix open recent dialog to open correct images
+- next/back arrows: correct index value
 
 ## License
 
