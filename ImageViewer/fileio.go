@@ -43,7 +43,7 @@ func (a *App) openFileDialog() {
 	dialog.Show()
 }
 
-func (a *App) open(file *os.File, dialog bool) error {
+func (a *App) open(file *os.File, folder bool) error {
 	defer file.Close()
 
 	// decode and update the image + get image path
@@ -66,7 +66,7 @@ func (a *App) open(file *os.File, dialog bool) error {
 
 	// save all images from folder for next/back
 
-	if dialog {
+	if folder {
 		a.img.Directory = filepath.Dir(file.Name())
 		openFolder, _ := os.Open(a.img.Directory)
 		a.img.ImagesInFolder, _ = openFolder.Readdirnames(0)
