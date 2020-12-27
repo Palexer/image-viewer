@@ -4,13 +4,11 @@ import (
 	"fmt"
 	"net/url"
 	"os"
-	"strings"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/driver/desktop"
-	"fyne.io/fyne/storage"
 	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
@@ -113,22 +111,22 @@ func (a *App) init() {
 	}
 }
 
-func (a *App) loadRecent() []fyne.URI {
-	a.lastOpened = strings.Split(a.app.Preferences().String("lastOpened"), ",")
-	a.lastOpened = reverseArray(a.lastOpened)
-	// max. 5 items
-	if len(a.lastOpened) > 5 {
-		a.lastOpened = a.lastOpened[:5]
-	}
-	// remove dublicates
-	a.lastOpened = removeDuplicates(a.lastOpened)
+// func (a *App) loadRecent() []fyne.URI {
+// 	a.lastOpened = strings.Split(a.app.Preferences().String("lastOpened"), ",")
+// 	a.lastOpened = reverseArray(a.lastOpened)
+// 	// max. 5 items
+// 	if len(a.lastOpened) > 5 {
+// 		a.lastOpened = a.lastOpened[:5]
+// 	}
+// 	// remove dublicates
+// 	a.lastOpened = removeDuplicates(a.lastOpened)
 
-	recent := []fyne.URI{}
-	for _, v := range a.lastOpened {
-		recent = append(recent, storage.NewURI(fyne.CurrentApp().Preferences().String(v)))
-	}
-	return recent
-}
+// 	recent := []fyne.URI{}
+// 	for _, v := range a.lastOpened {
+// 		recent = append(recent, storage.NewURI(fyne.CurrentApp().Preferences().String(v)))
+// 	}
+// 	return recent
+// }
 
 func main() {
 	a := app.NewWithID("io.github.palexer.image-viewer")

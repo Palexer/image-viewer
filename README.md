@@ -1,23 +1,24 @@
-<img src="ImageViewer/data/icon.png" width=32 height=32> 
+<img src="ImageViewer/data/icon.png" width=64 height=64> 
 
 # Image Viewer 
 
 ## Screenshot
 
-<img src="screenshot.png" width=75% height=75%>
+![Screenshot](screenshot.png)
 
 ## Used Tools
 
-- Language: Go
+- language: Go
 - UI framework: fyne
-- Image processing backend: gift
-- Cross compiling: fyne-cross
+- image processing backend: gift
+- cross compilation: fyne-cross
 
 ## ToDo
 
 - undo/redo: change parameter values
 - fix open recent dialog to open correct images
-- next/back arrows: correct index value
+- delete/copy images
+- shortcuts for back/forward withouth modkey
 
 ## License
 

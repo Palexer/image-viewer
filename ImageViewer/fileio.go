@@ -9,6 +9,7 @@ import (
 	"image/png"
 	"os"
 	"path/filepath"
+	"sort"
 	"strings"
 
 	"fyne.io/fyne"
@@ -65,7 +66,6 @@ func (a *App) open(file *os.File, folder bool) error {
 	a.imagePathLabel.SetText("Path: " + a.img.Path)
 
 	// save all images from folder for next/back
-
 	if folder {
 		a.img.Directory = filepath.Dir(file.Name())
 		openFolder, _ := os.Open(a.img.Directory)
@@ -73,15 +73,20 @@ func (a *App) open(file *os.File, folder bool) error {
 
 		// filter image files
 		imgList := []string{}
-		for i, v := range a.img.ImagesInFolder {
+		for _, v := range a.img.ImagesInFolder {
 			if strings.HasSuffix(v, ".png") || strings.HasSuffix(v, ".jpg") || strings.HasSuffix(v, ".jpeg") || strings.HasSuffix(v, ".gif") {
 				imgList = append(imgList, v)
-				if file.Name() == v {
-					a.img.index = i
-				}
 			}
 		}
 		a.img.ImagesInFolder = imgList
+		sort.Strings(a.img.ImagesInFolder) // sort array alphabetically
+
+		// get first index value
+		for i, v := range a.img.ImagesInFolder {
+			if filepath.Base(file.Name()) == v {
+				a.img.index = i
+			}
+		}
 	}
 
 	a.widthLabel.SetText(fmt.Sprintf("Width:   %dpx", a.img.OriginalImage.Bounds().Max.X))
