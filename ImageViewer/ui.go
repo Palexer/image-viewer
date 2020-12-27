@@ -2,7 +2,6 @@ package main
 
 import (
 	"os"
-	"path/filepath"
 	"runtime"
 
 	"fyne.io/fyne"
@@ -217,25 +216,29 @@ func (a *App) loadInformationTab() *container.TabItem {
 	))
 }
 
-func (a *App) loadRecentMenu() *fyne.Menu {
-	var items []*fyne.MenuItem
-	menu := &fyne.Menu{Label: "recent"}
+// func (a *App) loadRecentMenu() *fyne.Menu {
+// 	var items []*fyne.MenuItem
+// 	menu := &fyne.Menu{}
 
-	// reverse slice
-	/* code */
-
-	// remove dublicates
-	a.lastOpened = removeDuplicates(a.lastOpened)
-
-	for _, item := range a.lastOpened {
-		items = append(items, fyne.NewMenuItem(filepath.Base(item), func() {
-			file, _ := os.Open(item)
-			a.open(file, false)
-		}))
-	}
-	menu.Items = items
-	return menu
-}
+// 	for _, item := range a.loadRecent() {
+// 		items = append(items, fyne.NewMenuItem(filepath.Base(item.String()), func() {
+// 			uri, err := storage.OpenFileFromURI(item)
+// 			if err != nil {
+// 				fyne.LogError("Unable to open file \""+item.String()+"\"", err)
+// 				return
+// 			}
+// 			file, err := os.Open(uri.URI().String()[7:])
+// 			if err != nil {
+// 				fyne.LogError("Unable to open file \""+item.String()+"\"", err)
+// 				return
+// 			}
+// 			println(uri.URI().Name())
+// 			a.open(file, true)
+// 		}))
+// 	}
+// 	menu.Items = items
+// 	return menu
+// }
 
 func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.SetMaster()
@@ -246,14 +249,14 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		a.mainModKey = desktop.ControlModifier
 	}
 	// main menu
-	recent := fyne.NewMenuItem("Open recent", nil)
-	recent.ChildMenu = a.loadRecentMenu()
+	// recent := fyne.NewMenuItem("Open recent", nil)
+	// recent.ChildMenu = a.loadRecentMenu()
 
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
 			fyne.NewMenuItem("Open", a.openFileDialog),
 			fyne.NewMenuItem("Save As", a.saveFileDialog),
-			recent,
+			// recent,
 		),
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
@@ -334,7 +337,6 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	)
 	a.split.SetOffset(0.90)
 	layout := container.NewBorder(nil, a.loadStatusBar(), nil, nil, a.split)
-	a.loadPreferences()
 	return layout
 }
 

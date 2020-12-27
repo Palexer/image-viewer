@@ -31,18 +31,3 @@ func (a *App) loadSettingsUI() {
 	))
 	winSettings.Show()
 }
-
-func (a *App) loadPreferences() {
-	// theme
-	switch a.app.Preferences().StringWithFallback("Theme", "Dark") {
-	case "Light":
-		a.app.Settings().SetTheme(theme.LightTheme())
-	case "Dark":
-		a.app.Settings().SetTheme(theme.DarkTheme())
-	}
-
-	// show/hide statusbar
-	if a.app.Preferences().BoolWithFallback("statusBarVisible", true) == false {
-		a.statusBar.Hide()
-	}
-}

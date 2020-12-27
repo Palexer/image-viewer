@@ -10,6 +10,8 @@ import (
 	"fyne.io/fyne/app"
 	"fyne.io/fyne/canvas"
 	"fyne.io/fyne/driver/desktop"
+	"fyne.io/fyne/storage"
+	"fyne.io/fyne/theme"
 	"fyne.io/fyne/widget"
 )
 
@@ -85,14 +87,51 @@ type App struct {
 	rightArrow     *widget.Button
 }
 
+func reverseArray(arr []string) []string {
+	for i := 0; i < len(arr)/2; i++ {
+		j := len(arr) - i - 1
+		arr[i], arr[j] = arr[j], arr[i]
+	}
+	return arr
+}
+
 func (a *App) init() {
 	a.img = Img{}
 	a.img.init()
+
+	// theme
+	switch a.app.Preferences().StringWithFallback("Theme", "Dark") {
+	case "Light":
+		a.app.Settings().SetTheme(theme.LightTheme())
+	case "Dark":
+		a.app.Settings().SetTheme(theme.DarkTheme())
+	}
+
+	// show/hide statusbar
+	if a.app.Preferences().BoolWithFallback("statusBarVisible", true) == false {
+		a.statusBar.Hide()
+	}
+}
+
+func (a *App) loadRecent() []fyne.URI {
 	a.lastOpened = strings.Split(a.app.Preferences().String("lastOpened"), ",")
+	a.lastOpened = reverseArray(a.lastOpened)
+	// max. 5 items
+	if len(a.lastOpened) > 5 {
+		a.lastOpened = a.lastOpened[:5]
+	}
+	// remove dublicates
+	a.lastOpened = removeDuplicates(a.lastOpened)
+
+	recent := []fyne.URI{}
+	for _, v := range a.lastOpened {
+		recent = append(recent, storage.NewURI(fyne.CurrentApp().Preferences().String(v)))
+	}
+	return recent
 }
 
 func main() {
-	a := app.NewWithID("io.github.palexer")
+	a := app.NewWithID("io.github.palexer.image-viewer")
 	w := a.NewWindow("Image Viewer")
 	a.SetIcon(resourceIconPng)
 	w.SetIcon(resourceIconPng)
