@@ -338,11 +338,13 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 			a.nextImage(false, false)
 		// delete images with delete key
 		case fyne.KeyDelete:
-			dialog.ShowConfirm("Delte file?", "Do you really want to delete this image?\n This action can't be undone.", func(b bool) {
-				if b {
-					a.deleteFile()
-				}
-			}, a.mainWin)
+			if a.image.Image != nil {
+				dialog.ShowConfirm("Delte file?", "Do you really want to delete this image?\n This action can't be undone.", func(b bool) {
+					if b {
+						a.deleteFile()
+					}
+				}, a.mainWin)
+			}
 		}
 	})
 
