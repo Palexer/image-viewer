@@ -107,6 +107,7 @@ func (a *App) open(file *os.File, folder bool) error {
 	a.resetBtn.Enable()
 	a.leftArrow.Enable()
 	a.rightArrow.Enable()
+	a.deleteBtn.Enable()
 	return nil
 }
 
@@ -140,4 +141,24 @@ func (a *App) save(writer fyne.URIWriteCloser) error {
 		return errors.New("unsupported file extension\n supported extensions: .jpg, .png, .gif")
 	}
 	return nil
+}
+
+func (a *App) deleteFile() {
+	if err := os.Remove(a.img.Path); err != nil {
+		dialog.NewError(err, a.mainWin)
+		return
+	}
+	if a.img.index == len(a.img.ImagesInFolder)-1 {
+		a.nextImage(false, true)
+	} else if len(a.img.ImagesInFolder) == 1 {
+		a.image.Image = nil
+		a.img.EditedImage = nil
+		a.img.OriginalImage = nil
+		a.rightArrow.Disable()
+		a.leftArrow.Disable()
+		a.deleteBtn.Disable()
+		a.image.Refresh()
+	} else {
+		a.nextImage(true, true)
+	}
 }

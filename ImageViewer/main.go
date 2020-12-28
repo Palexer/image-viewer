@@ -83,6 +83,7 @@ type App struct {
 	imagePathLabel *widget.Label
 	leftArrow      *widget.Button
 	rightArrow     *widget.Button
+	deleteBtn      *widget.Button
 }
 
 func reverseArray(arr []string) []string {

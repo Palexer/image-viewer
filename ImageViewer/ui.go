@@ -31,7 +31,7 @@ func removeDuplicates(elements []string) []string {
 	return result
 }
 
-func (a *App) nextImage(forward bool) {
+func (a *App) nextImage(forward, folder bool) {
 	if a.img.OriginalImage == nil || len(a.img.ImagesInFolder) < 2 {
 		return
 	}
@@ -53,25 +53,40 @@ func (a *App) nextImage(forward bool) {
 		dialog.ShowError(err, a.mainWin)
 		return
 	}
-	a.open(file, false)
+	if folder {
+		a.open(file, true)
+	} else {
+		a.open(file, false)
+	}
 }
 
 func (a *App) loadStatusBar() *widget.Box {
 	a.imagePathLabel = widget.NewLabel("Path: ")
 	a.leftArrow = widget.NewButtonWithIcon("", theme.NavigateBackIcon(), func() {
-		a.nextImage(false)
+		a.nextImage(false, false)
 	})
 
 	a.rightArrow = widget.NewButtonWithIcon("", theme.NavigateNextIcon(), func() {
-		a.nextImage(true)
+		a.nextImage(true, false)
 	})
 	a.leftArrow.Disable()
 	a.rightArrow.Disable()
+
+	a.deleteBtn = widget.NewButtonWithIcon("", theme.DeleteIcon(), func() {
+		dialog.ShowConfirm("Delte file?", "Do you really want to delete this image?\n This action can't be undone.", func(b bool) {
+			if b {
+				a.deleteFile()
+			}
+		}, a.mainWin)
+	})
+	a.deleteBtn.Disable()
+
 	a.statusBar = widget.NewVBox(
 		widget.NewSeparator(),
 		widget.NewHBox(
 			a.imagePathLabel,
 			layout.NewSpacer(),
+			a.deleteBtn,
 			a.leftArrow,
 			a.rightArrow,
 		))
@@ -315,14 +330,21 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	}, func(shortcut fyne.Shortcut) { a.app.Quit() })
 
 	// move forward/back within the current folder of images
-	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
-		KeyName:  fyne.KeyLeft,
-		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.nextImage(false) })
-	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
-		KeyName:  fyne.KeyRight,
-		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.nextImage(true) })
+	a.mainWin.Canvas().SetOnTypedKey(func(ke *fyne.KeyEvent) {
+		switch ke.Name {
+		case fyne.KeyRight:
+			a.nextImage(true, false)
+		case fyne.KeyLeft:
+			a.nextImage(false, false)
+		// delete images with delete key
+		case fyne.KeyDelete:
+			dialog.ShowConfirm("Delte file?", "Do you really want to delete this image?\n This action can't be undone.", func(b bool) {
+				if b {
+					a.deleteFile()
+				}
+			}, a.mainWin)
+		}
+	})
 
 	// image canvas
 	a.image = &canvas.Image{}

@@ -16,9 +16,7 @@
 ## ToDo
 
 - undo/redo: change parameter values
-- fix open recent dialog to open correct images
-- delete/copy images
-- shortcuts for back/forward withouth modkey
+- open recent images
 
 ## License
 
