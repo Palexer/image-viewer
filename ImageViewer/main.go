@@ -71,14 +71,14 @@ type App struct {
 	sliderColorBalanceB *editingSlider
 	sliderSepia         *editingSlider
 	sliderBlur          *editingSlider
+	resetBtn            *widget.Button
 
-	resetBtn *widget.Button
+	split       *widget.SplitContainer
+	widthLabel  *widget.Label
+	heightLabel *widget.Label
+	imgSize     *widget.Label
+	imgLastMod  *widget.Label
 
-	split          *widget.SplitContainer
-	widthLabel     *widget.Label
-	heightLabel    *widget.Label
-	imgSize        *widget.Label
-	imgLastMod     *widget.Label
 	statusBar      *widget.Box
 	imagePathLabel *widget.Label
 	leftArrow      *widget.Button

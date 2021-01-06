@@ -39,14 +39,6 @@ sudo make uninstall
 
 - undo/redo: change parameter values
 - open recent images
-- creation time:
-
-```
-info, _ := os.Stat(event.Name)
-unixTime, _ := info.Sys().(*syscall.Stat_t).Ctim.Unix()
-time := time.Unix(unixTime, 0)
-log.Print(time)
-```
 
 ## License
 

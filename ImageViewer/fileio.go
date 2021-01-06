@@ -3,7 +3,6 @@ package main
 import (
 	"errors"
 	"fmt"
-	"image"
 	"image/gif"
 	"image/jpeg"
 	"image/png"
@@ -15,6 +14,8 @@ import (
 	"fyne.io/fyne"
 	"fyne.io/fyne/dialog"
 	"fyne.io/fyne/storage"
+
+	"github.com/disintegration/imageorient"
 )
 
 func (a *App) openFileDialog() {
@@ -49,7 +50,7 @@ func (a *App) open(file *os.File, folder bool) error {
 
 	// decode and update the image + get image path
 	var err error
-	a.img.OriginalImage, _, err = image.Decode(file)
+	a.img.OriginalImage, _, err = imageorient.Decode(file)
 	if err != nil {
 		return fmt.Errorf("Unable to decode image %v", err)
 	}
@@ -74,7 +75,7 @@ func (a *App) open(file *os.File, folder bool) error {
 		// filter image files
 		imgList := []string{}
 		for _, v := range a.img.ImagesInFolder {
-			if strings.HasSuffix(v, ".png") || strings.HasSuffix(v, ".jpg") || strings.HasSuffix(v, ".jpeg") || strings.HasSuffix(v, ".gif") {
+			if strings.HasSuffix(strings.ToLower(v), ".png") || strings.HasSuffix(strings.ToLower(v), ".jpg") || strings.HasSuffix(strings.ToLower(v), ".jpeg") || strings.HasSuffix(strings.ToLower(v), ".gif") {
 				imgList = append(imgList, v)
 			}
 		}
