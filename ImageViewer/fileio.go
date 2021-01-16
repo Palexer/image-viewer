@@ -117,6 +117,10 @@ func (a *App) saveFileDialog() {
 		dialog.ShowError(errors.New("no image opened"), a.mainWin)
 		return
 	}
+	if a.img.EditedImage == nil {
+		a.apply()
+	}
+
 	dialog.ShowFileSave(func(writer fyne.URIWriteCloser, err error) {
 		err = a.save(writer)
 		if err != nil {
@@ -130,8 +134,11 @@ func (a *App) save(writer fyne.URIWriteCloser) error {
 	if writer == nil {
 		return nil
 	}
+
 	switch writer.URI().Extension() {
 	case ".jpeg":
+		jpeg.Encode(writer, a.img.EditedImage, nil)
+	case ".jpg":
 		jpeg.Encode(writer, a.img.EditedImage, nil)
 	case ".png":
 		png.Encode(writer, a.img.EditedImage)
