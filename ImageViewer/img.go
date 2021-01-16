@@ -36,6 +36,9 @@ type Img struct {
 	cbGreen gift.Filter
 	cbBlue  gift.Filter
 
+	// transform
+	resize gift.Filter
+
 	lastFilters       []gift.Filter
 	lastFiltersUndone []gift.Filter
 }

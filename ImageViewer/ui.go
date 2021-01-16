@@ -1,8 +1,10 @@
 package main
 
 import (
+	"fmt"
 	"os"
 	"runtime"
+	"strconv"
 
 	"fyne.io/fyne"
 	"fyne.io/fyne/canvas"
@@ -159,6 +161,61 @@ func (a *App) loadEditorTab() *container.TabItem {
 	rotate90Btn := widget.NewButton("Rotate 90°", func() { a.addParameter(gift.Rotate90()) })
 	flipVerticalBtn := widget.NewButton("Flip Vertically", func() { a.addParameter(gift.FlipVertical()) })
 	flipHorizontalBtn := widget.NewButton("Flip Horizontally", func() { a.addParameter(gift.FlipHorizontal()) })
+	resizeBtn := widget.NewButton("Resize", func() {
+		var keepAspectRatio bool
+
+		widthEntry := widget.NewEntry()
+		heightEntry := widget.NewEntry()
+		widthEntry.SetPlaceHolder("Width")
+		heightEntry.SetPlaceHolder("Height")
+		widthEntry.Validator = func(s string) error {
+			if _, err := strconv.Atoi(s); err != nil {
+				return fmt.Errorf("input is not a valid number")
+			}
+			return nil
+		}
+		heightEntry.Validator = func(s string) error {
+			if _, err := strconv.Atoi(s); err != nil {
+				return fmt.Errorf("input is not a valid number")
+			}
+			return nil
+		}
+
+		dialog.ShowCustom("Resize", "Cancel", container.NewVBox(
+			container.NewHBox(
+				widthEntry,
+				heightEntry,
+			),
+			container.NewHBox(
+				widget.NewCheck("Keep Aspect Ratio", func(b bool) {
+					if b {
+						keepAspectRatio = true
+					} else {
+						keepAspectRatio = false
+					}
+				}),
+				widget.NewButton("Apply", func() {
+					if err := widthEntry.Validate(); err != nil {
+						dialog.ShowError(err, a.mainWin)
+						return
+					}
+					if err := widthEntry.Validate(); err != nil {
+						dialog.ShowError(err, a.mainWin)
+						return
+					}
+
+					width, _ := strconv.Atoi(widthEntry.Text)
+					height, _ := strconv.Atoi(heightEntry.Text)
+					if keepAspectRatio {
+						a.changeParameter(&a.img.resize, gift.ResizeToFit(width, height, gift.LinearResampling))
+					} else {
+						a.changeParameter(&a.img.resize, gift.ResizeToFill(width, height, gift.LinearResampling, gift.BottomAnchor))
+					}
+					a.mainWin.Canvas().Overlays().Top().Hide()
+				}),
+			),
+		), a.mainWin)
+	})
 
 	grayscaleBtn := widget.NewButton("Grayscale", func() { a.changeParameter(&a.img.grayscale, gift.Grayscale()) })
 
@@ -199,6 +256,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 						rotate90Btn,
 						flipHorizontalBtn,
 						flipVerticalBtn,
+						resizeBtn,
 					),
 				),
 				widget.NewAccordionItem(
