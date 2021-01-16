@@ -2,6 +2,12 @@
 
 # Image Viewer 
 
+## About
+
+This is a simple image viewer written in Go (and the technologies listed below).
+It also includes some basic editing functionality. 
+Prebuilt packages are currently available for Windows, macOS and Linux [here](https://github.com/Palexer/image-viewer/releases/).
+
 ## Screenshot
 
 ![Screenshot](screenshot.png)
@@ -45,6 +51,10 @@ sudo make uninstall
 
 - undo/redo: change parameter values
 - open recent images
+
+## Help
+
+If you need any help, feel free to open a [new Issue](https://github.com/Palexer/image-viewer/issues/new).
 
 ## License
 
