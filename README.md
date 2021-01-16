@@ -35,6 +35,12 @@ To uninstall type:
 sudo make uninstall
 ```
 
+## Contributing
+
+1. Fork this repository to your local machine
+2. Add a new branch, make changes, merge to master branch
+3. Make a pull request
+
 ## ToDo
 
 - undo/redo: change parameter values
