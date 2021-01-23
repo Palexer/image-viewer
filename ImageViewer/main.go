@@ -5,12 +5,13 @@ import (
 	"net/url"
 	"os"
 
-	"fyne.io/fyne"
-	"fyne.io/fyne/app"
-	"fyne.io/fyne/canvas"
-	"fyne.io/fyne/driver/desktop"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/app"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 )
 
 type editingSlider struct {
@@ -31,11 +32,11 @@ func newEditingSlider(min, max float64) *editingSlider {
 }
 
 // newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
-func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *widget.Box {
+func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *fyne.Container {
 	label := widget.NewLabel(fmt.Sprintf("%v %2.f", infoText, defaultValue))
 	slider.SetValue(defaultValue)
 	slider.OnChanged = func(f float64) { label.SetText(fmt.Sprintf("%v%2.f", infoText, slider.Value)) }
-	vbox := widget.NewVBox(
+	vbox := container.NewVBox(
 		label,
 		slider,
 	)
@@ -73,13 +74,13 @@ type App struct {
 	sliderBlur          *editingSlider
 	resetBtn            *widget.Button
 
-	split       *widget.SplitContainer
+	split       *container.Split
 	widthLabel  *widget.Label
 	heightLabel *widget.Label
 	imgSize     *widget.Label
 	imgLastMod  *widget.Label
 
-	statusBar      *widget.Box
+	statusBar      *fyne.Container
 	imagePathLabel *widget.Label
 	leftArrow      *widget.Button
 	rightArrow     *widget.Button

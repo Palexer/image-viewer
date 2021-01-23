@@ -11,9 +11,9 @@ import (
 	"sort"
 	"strings"
 
-	"fyne.io/fyne"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/storage"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/storage"
 
 	"github.com/disintegration/imageorient"
 )

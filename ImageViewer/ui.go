@@ -6,14 +6,14 @@ import (
 	"runtime"
 	"strconv"
 
-	"fyne.io/fyne"
-	"fyne.io/fyne/canvas"
-	"fyne.io/fyne/container"
-	"fyne.io/fyne/dialog"
-	"fyne.io/fyne/driver/desktop"
-	"fyne.io/fyne/layout"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
+	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/canvas"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/dialog"
+	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 	"github.com/disintegration/gift"
 )
 
@@ -62,7 +62,7 @@ func (a *App) nextImage(forward, folder bool) {
 	}
 }
 
-func (a *App) loadStatusBar() *widget.Box {
+func (a *App) loadStatusBar() *fyne.Container {
 	a.imagePathLabel = widget.NewLabel("Path: ")
 	a.leftArrow = widget.NewButtonWithIcon("", theme.NavigateBackIcon(), func() {
 		a.nextImage(false, false)
@@ -83,9 +83,9 @@ func (a *App) loadStatusBar() *widget.Box {
 	})
 	a.deleteBtn.Disable()
 
-	a.statusBar = widget.NewVBox(
+	a.statusBar = container.NewVBox(
 		widget.NewSeparator(),
-		widget.NewHBox(
+		container.NewHBox(
 			a.imagePathLabel,
 			layout.NewSpacer(),
 			a.deleteBtn,
@@ -231,11 +231,11 @@ func (a *App) loadEditorTab() *container.TabItem {
 	a.resetBtn.Disable()
 
 	return container.NewTabItem("Editor", container.NewScroll(
-		widget.NewVBox(
+		container.NewVBox(
 			widget.NewAccordion(
 				widget.NewAccordionItem(
 					"General",
-					widget.NewVBox(
+					container.NewVBox(
 						editBrightness,
 						editContrast,
 						editHue,
@@ -244,7 +244,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 				),
 				widget.NewAccordionItem(
 					"Color Balance",
-					widget.NewVBox(
+					container.NewVBox(
 						editColorBalanceR,
 						editColorBalanceG,
 						editColorBalanceB,
@@ -252,7 +252,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 				),
 				widget.NewAccordionItem(
 					"Transform",
-					widget.NewVBox(
+					container.NewVBox(
 						rotate90Btn,
 						flipHorizontalBtn,
 						flipVerticalBtn,
@@ -261,7 +261,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 				),
 				widget.NewAccordionItem(
 					"Filter",
-					widget.NewVBox(
+					container.NewVBox(
 						editSepia,
 						editBlur,
 						grayscaleBtn,
@@ -280,7 +280,7 @@ func (a *App) loadInformationTab() *container.TabItem {
 	a.imgLastMod = widget.NewLabel("Last modified: ")
 	// a.informationWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
 	return container.NewTabItem("Information", container.NewScroll(
-		widget.NewVBox(
+		container.NewVBox(
 			a.widthLabel,
 			a.heightLabel,
 			a.imgSize,
@@ -341,7 +341,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		),
 		fyne.NewMenu("Help",
 			fyne.NewMenuItem("About", func() {
-				dialog.ShowCustom("About", "Ok", widget.NewVBox(
+				dialog.ShowCustom("About", "Ok", container.NewVBox(
 					widget.NewLabel("A simple image viewer with some editing functionality."),
 					widget.NewHyperlink("Help and more information on Github", parseURL("https://github.com/Palexer/image-viewer")),
 				), a.mainWin)

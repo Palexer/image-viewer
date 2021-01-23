@@ -1,9 +1,10 @@
 package main
 
 import (
-	"fyne.io/fyne/layout"
-	"fyne.io/fyne/theme"
-	"fyne.io/fyne/widget"
+	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/layout"
+	"fyne.io/fyne/v2/theme"
+	"fyne.io/fyne/v2/widget"
 )
 
 func (a *App) loadSettingsUI() {
@@ -20,8 +21,8 @@ func (a *App) loadSettingsUI() {
 	})
 	themeSelector.SetSelected(a.app.Preferences().StringWithFallback("Theme", "Dark"))
 
-	winSettings.SetContent(widget.NewVBox(
-		widget.NewHBox(
+	winSettings.SetContent(container.NewVBox(
+		container.NewHBox(
 			widget.NewLabel("Theme"),
 			themeSelector,
 		),
