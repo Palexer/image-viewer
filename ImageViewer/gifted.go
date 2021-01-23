@@ -2,13 +2,13 @@ package main
 
 import "github.com/disintegration/gift"
 
-// Gifted extends gift.GIFT with a Remove and a Replace function
-type Gifted struct {
+// gifted extends gift.GIFT with a Remove and a Replace function
+type gifted struct {
 	*gift.GIFT
 }
 
-// Remove removes the filter passed into the function
-func (g *Gifted) Remove(filter gift.Filter) bool {
+// remove removes the filter passed into the function
+func (g *gifted) remove(filter gift.Filter) bool {
 	for i, f := range g.Filters {
 		if f == filter {
 			copy(g.Filters[i:], g.Filters[i+1:])     // Shift a[i+1:] left one index.
@@ -20,8 +20,8 @@ func (g *Gifted) Remove(filter gift.Filter) bool {
 	return false
 }
 
-// Replace replaces the old with the new filter. If the old filter doesn't exist, it applys the new filter.
-func (g *Gifted) Replace(old, new gift.Filter) bool {
+// replace replaces the old with the new filter. If the old filter doesn't exist, it applys the new filter.
+func (g *gifted) replace(old, new gift.Filter) bool {
 	for i, f := range g.Filters {
 		if f == old {
 			g.Filters[i] = new

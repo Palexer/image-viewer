@@ -12,7 +12,7 @@ type Img struct {
 	OriginalImage  image.Image
 	FileData       os.FileInfo
 	EditedImage    *image.RGBA
-	gifted         *Gifted
+	gifted         *gifted
 	Path           string
 	ImagesInFolder []string
 	index          int
@@ -44,7 +44,7 @@ type Img struct {
 }
 
 func (i *Img) init() {
-	i.gifted = &Gifted{}
+	i.gifted = &gifted{}
 	i.gifted.GIFT = gift.New()
 }
 
@@ -53,7 +53,7 @@ func (a *App) changeParameter(filterVar *gift.Filter, newFilter gift.Filter) {
 		return
 	}
 
-	a.img.gifted.Replace(*filterVar, newFilter)
+	a.img.gifted.replace(*filterVar, newFilter)
 	*filterVar = newFilter
 	a.img.lastFilters = append(a.img.lastFilters, newFilter)
 	go a.apply()
@@ -105,7 +105,7 @@ func (a *App) reset() {
 func (a *App) undo() {
 	if len(a.img.lastFilters) > 0 {
 		filterToUndo := a.img.lastFilters[len(a.img.lastFilters)-1]
-		a.img.gifted.Remove(filterToUndo)
+		a.img.gifted.remove(filterToUndo)
 		a.img.lastFiltersUndone = append(a.img.lastFiltersUndone, filterToUndo)
 		a.img.lastFilters = a.img.lastFilters[:len(a.img.lastFilters)-1]
 		a.apply()
