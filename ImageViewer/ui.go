@@ -289,30 +289,6 @@ func (a *App) loadInformationTab() *container.TabItem {
 	))
 }
 
-// func (a *App) loadRecentMenu() *fyne.Menu {
-// 	var items []*fyne.MenuItem
-// 	menu := &fyne.Menu{}
-
-// 	for _, item := range a.loadRecent() {
-// 		items = append(items, fyne.NewMenuItem(filepath.Base(item.String()), func() {
-// 			uri, err := storage.OpenFileFromURI(item)
-// 			if err != nil {
-// 				fyne.LogError("Unable to open file \""+item.String()+"\"", err)
-// 				return
-// 			}
-// 			file, err := os.Open(uri.URI().String()[7:])
-// 			if err != nil {
-// 				fyne.LogError("Unable to open file \""+item.String()+"\"", err)
-// 				return
-// 			}
-// 			println(uri.URI().Name())
-// 			a.open(file, true)
-// 		}))
-// 	}
-// 	menu.Items = items
-// 	return menu
-// }
-
 func (a *App) loadMainUI() fyne.CanvasObject {
 	a.mainWin.SetMaster()
 	// set main mod key to super on darwin hosts, else set it to ctrl
@@ -321,10 +297,8 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	} else {
 		a.mainModKey = desktop.ControlModifier
 	}
-	// main menu
-	// recent := fyne.NewMenuItem("Open recent", nil)
-	// recent.ChildMenu = a.loadRecentMenu()
 
+	// main menu
 	mainMenu := fyne.NewMainMenu(
 		fyne.NewMenu("File",
 			fyne.NewMenuItem("Open", a.openFileDialog),
