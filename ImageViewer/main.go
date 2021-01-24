@@ -9,7 +9,9 @@ import (
 	"fyne.io/fyne/v2/app"
 	"fyne.io/fyne/v2/canvas"
 	"fyne.io/fyne/v2/container"
+	"fyne.io/fyne/v2/data/binding"
 	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/layout"
 	"fyne.io/fyne/v2/theme"
 	"fyne.io/fyne/v2/widget"
 )
@@ -33,14 +35,20 @@ func newEditingSlider(min, max float64) *editingSlider {
 
 // newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
 func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *fyne.Container {
-	label := widget.NewLabel(fmt.Sprintf("%v %2.f", infoText, defaultValue))
-	slider.SetValue(defaultValue)
-	slider.OnChanged = func(f float64) { label.SetText(fmt.Sprintf("%v%2.f", infoText, slider.Value)) }
-	vbox := container.NewVBox(
-		label,
+	data := binding.BindFloat(&defaultValue)
+	text := widget.NewLabel(infoText)
+	value := widget.NewLabelWithData(binding.FloatToStringWithFormat(data, "%.0f"))
+	slider.Bind(data)
+	slider.Step = 1
+
+	return container.NewVBox(
+		container.NewHBox(
+			text,
+			layout.NewSpacer(),
+			value,
+		),
 		slider,
 	)
-	return vbox
 }
 
 func parseURL(urlStr string) *url.URL {
@@ -113,23 +121,6 @@ func (a *App) init() {
 	}
 }
 
-// func (a *App) loadRecent() []fyne.URI {
-// 	a.lastOpened = strings.Split(a.app.Preferences().String("lastOpened"), ",")
-// 	a.lastOpened = reverseArray(a.lastOpened)
-// 	// max. 5 items
-// 	if len(a.lastOpened) > 5 {
-// 		a.lastOpened = a.lastOpened[:5]
-// 	}
-// 	// remove dublicates
-// 	a.lastOpened = removeDuplicates(a.lastOpened)
-
-// 	recent := []fyne.URI{}
-// 	for _, v := range a.lastOpened {
-// 		recent = append(recent, storage.NewURI(fyne.CurrentApp().Preferences().String(v)))
-// 	}
-// 	return recent
-// }
-
 func main() {
 	a := app.NewWithID("io.github.palexer.image-viewer")
 	w := a.NewWindow("Image Viewer")
@@ -145,6 +136,6 @@ func main() {
 		}
 		ui.open(file, true)
 	}
-	w.Resize(fyne.NewSize(1380, 870))
+	w.Resize(fyne.NewSize(1200, 750))
 	w.ShowAndRun()
 }
