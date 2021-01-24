@@ -93,6 +93,8 @@ type App struct {
 	leftArrow      *widget.Button
 	rightArrow     *widget.Button
 	deleteBtn      *widget.Button
+
+	fullscreenWin fyne.Window
 }
 
 func reverseArray(arr []string) []string {

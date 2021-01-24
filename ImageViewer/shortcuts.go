@@ -9,12 +9,6 @@ import (
 
 func (a *App) loadKeyboardShortcuts() {
 	// keyboard shortcuts
-	// ctrl+f for focus mode
-	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
-		KeyName:  fyne.KeyF,
-		Modifier: a.mainModKey,
-	}, func(shortcut fyne.Shortcut) { a.focusMode() })
-
 	// ctrl+o to open file
 	a.mainWin.Canvas().AddShortcut(&desktop.CustomShortcut{
 		KeyName:  fyne.KeyO,
@@ -66,13 +60,15 @@ func (a *App) loadKeyboardShortcuts() {
 			if len(a.mainWin.Canvas().Overlays().List()) > 0 {
 				a.mainWin.Canvas().Overlays().Top().Hide()
 			}
+		case fyne.KeyF11:
+			a.focusMode()
 		}
 	})
 }
 
 func (a *App) showShortcuts() {
-	shortcuts := []string{"Ctrl+F", "Ctrl+O", "Ctrl+S", "Ctrl+Z", "Ctrl+Y", "Ctrl+Q", "Arrow Right", "Arrow Left", "Delete", "Escape"}
-	descriptions := []string{"Focus Mode", "Open File", "Save File", "Undo", "Redo", "Quit Application", "Next Image", "Last Image", "Delete Image", "Close dialog"}
+	shortcuts := []string{"Ctrl+O", "Ctrl+S", "Ctrl+Z", "Ctrl+Y", "Ctrl+Q", "F11", "Arrow Right", "Arrow Left", "Delete", "Escape"}
+	descriptions := []string{"Open File", "Save File", "Undo", "Redo", "Quit Application", "Fullscreen View", "Next Image", "Last Image", "Delete Image", "Close dialog"}
 	win := a.app.NewWindow("Keyboard Shortcuts")
 	table := widget.NewTable(
 		func() (int, int) { return len(shortcuts), 2 },

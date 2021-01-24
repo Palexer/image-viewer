@@ -27,7 +27,7 @@ func (a *App) loadSettingsUI() {
 			themeSelector,
 		),
 		layout.NewSpacer(),
-		widget.NewLabel("v1.0 | License: MIT"),
+		widget.NewLabel("v1.1 | License: MIT"),
 		widget.NewHyperlink("Github (source code and more information)", parseURL("https://github.com/Palexer/image-viewer")),
 	))
 	winSettings.Show()

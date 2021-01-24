@@ -312,7 +312,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
-			fyne.NewMenuItem("Focus Mode (Ctrl+F)", a.focusMode),
+			fyne.NewMenuItem("Fullscreen", a.focusMode),
 		),
 		fyne.NewMenu("Help",
 			fyne.NewMenuItem("About", func() {
@@ -345,14 +345,25 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 
 func (a *App) focusMode() {
 	if !a.focus {
-		a.statusBar.Hide()
-		a.split.Hide()
-		a.mainWin.SetContent(fyne.NewContainer(a.image))
+		a.fullscreenWin = a.app.NewWindow("Image Viewer - " + a.img.Path)
+		a.fullscreenWin.SetFullScreen(true)
+		a.fullscreenWin.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
+			switch key.Name {
+			case fyne.KeyEscape:
+				a.fullscreenWin.Close()
+			case fyne.KeyF11:
+				a.fullscreenWin.Close()
+			case fyne.KeyRight:
+				a.nextImage(true, false)
+			case fyne.KeyLeft:
+				a.nextImage(false, false)
+			}
+		})
+		a.fullscreenWin.SetContent(a.image)
+		a.fullscreenWin.Show()
 		a.focus = true
 	} else {
-		a.statusBar.Show()
-		a.split.Show()
-		a.mainWin.SetContent(container.NewBorder(nil, a.statusBar, nil, nil, a.split))
+		a.fullscreenWin.Hide()
 		a.focus = false
 	}
 }
