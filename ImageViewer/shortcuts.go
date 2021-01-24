@@ -4,6 +4,7 @@ import (
 	"fyne.io/fyne/v2"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/driver/desktop"
+	"fyne.io/fyne/v2/widget"
 )
 
 func (a *App) loadKeyboardShortcuts() {
@@ -67,4 +68,39 @@ func (a *App) loadKeyboardShortcuts() {
 			}
 		}
 	})
+}
+
+func (a *App) showShortcuts() {
+	shortcuts := []string{"Ctrl+F", "Ctrl+O", "Ctrl+S", "Ctrl+Z", "Ctrl+Y", "Ctrl+Q", "Arrow Right", "Arrow Left", "Delete", "Escape"}
+	descriptions := []string{"Focus Mode", "Open File", "Save File", "Undo", "Redo", "Quit Application", "Next Image", "Last Image", "Delete Image", "Close dialog"}
+	win := a.app.NewWindow("Keyboard Shortcuts")
+	table := widget.NewTable(
+		func() (int, int) { return len(shortcuts), 2 },
+		func() fyne.CanvasObject {
+			return widget.NewLabel("")
+		},
+		func(id widget.TableCellID, obj fyne.CanvasObject) {
+			label := obj.(*widget.Label)
+			if id.Row == 0 {
+				if id.Col == 0 {
+					label.SetText("Description")
+					label.TextStyle.Bold = true
+				} else {
+					label.SetText("Shortcut")
+					label.TextStyle.Bold = true
+				}
+			} else {
+				if id.Col == 0 {
+					label.SetText(descriptions[id.Row-1])
+				} else {
+					label.SetText(descriptions[id.Row-1])
+				}
+			}
+		},
+	)
+	table.SetColumnWidth(0, 250)
+	table.SetColumnWidth(1, 250)
+	win.SetContent(table)
+	win.Resize(fyne.NewSize(500, 500))
+	win.Show()
 }

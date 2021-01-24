@@ -308,6 +308,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
 			fyne.NewMenuItem("Redo", a.redo),
+			fyne.NewMenuItem("Keyboard Shortucts", a.showShortcuts),
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
