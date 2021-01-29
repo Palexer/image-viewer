@@ -49,8 +49,10 @@ sudo make uninstall
 
 ## ToDo
 
-- undo/redo: change parameter values
+- undo/redo: change parameter values back to default
 - open recent images
+- rename image
+- zoom
 
 ## Help
 

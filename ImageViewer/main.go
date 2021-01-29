@@ -88,11 +88,10 @@ type App struct {
 	imgSize     *widget.Label
 	imgLastMod  *widget.Label
 
-	statusBar      *fyne.Container
-	imagePathLabel *widget.Label
-	leftArrow      *widget.Button
-	rightArrow     *widget.Button
-	deleteBtn      *widget.Button
+	statusBar  *fyne.Container
+	leftArrow  *widget.Button
+	rightArrow *widget.Button
+	deleteBtn  *widget.Button
 
 	fullscreenWin fyne.Window
 }

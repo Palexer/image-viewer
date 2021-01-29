@@ -64,17 +64,6 @@ func (a *App) open(file *os.File, folder bool) error {
 
 	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%s", a.img.FileData.ModTime().Format("02-01-2006")))
 
-	// shrink path to fit window size
-	tmpPath := a.img.Path
-	i := 0
-	for ; fyne.MeasureText("Path: "+tmpPath, 12, fyne.TextStyle{}).Width-3 > a.image.Size().Width; i++ {
-		tmpPath = tmpPath[:len(tmpPath)-2]
-	}
-	if i != 0 {
-		tmpPath = tmpPath + "..."
-	}
-	a.imagePathLabel.SetText("Path: " + tmpPath)
-
 	// save all images from folder for next/back
 	if folder {
 		a.img.Directory = filepath.Dir(file.Name())

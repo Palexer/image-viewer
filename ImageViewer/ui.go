@@ -62,8 +62,32 @@ func (a *App) nextImage(forward, folder bool) {
 	}
 }
 
+func (a *App) focusMode() {
+	if !a.focus {
+		a.fullscreenWin = a.app.NewWindow("Image Viewer - " + a.img.Path)
+		a.fullscreenWin.SetFullScreen(true)
+		a.fullscreenWin.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
+			switch key.Name {
+			case fyne.KeyEscape:
+				a.fullscreenWin.Close()
+			case fyne.KeyF11:
+				a.fullscreenWin.Close()
+			case fyne.KeyRight:
+				a.nextImage(true, false)
+			case fyne.KeyLeft:
+				a.nextImage(false, false)
+			}
+		})
+		a.fullscreenWin.SetContent(a.image)
+		a.fullscreenWin.Show()
+		a.focus = true
+	} else {
+		a.fullscreenWin.Hide()
+		a.focus = false
+	}
+}
+
 func (a *App) loadStatusBar() *fyne.Container {
-	a.imagePathLabel = widget.NewLabel("Path: ")
 	a.leftArrow = widget.NewButtonWithIcon("", theme.NavigateBackIcon(), func() {
 		a.nextImage(false, false)
 	})
@@ -86,12 +110,12 @@ func (a *App) loadStatusBar() *fyne.Container {
 	a.statusBar = container.NewVBox(
 		widget.NewSeparator(),
 		container.NewHBox(
-			a.imagePathLabel,
-			layout.NewSpacer(),
-			a.deleteBtn,
 			a.leftArrow,
 			a.rightArrow,
-		))
+			layout.NewSpacer(),
+			a.deleteBtn,
+		),
+	)
 	return a.statusBar
 }
 
@@ -278,7 +302,6 @@ func (a *App) loadInformationTab() *container.TabItem {
 	a.heightLabel = widget.NewLabel("Height: ")
 	a.imgSize = widget.NewLabel("Size: ")
 	a.imgLastMod = widget.NewLabel("Last modified: ")
-	// a.informationWidgets.SetMinSize(fyne.NewSize(150, a.mainWin.Canvas().Size().Height))
 	return container.NewTabItem("Information", container.NewScroll(
 		container.NewVBox(
 			a.widthLabel,
@@ -308,23 +331,30 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 		fyne.NewMenu("Edit",
 			fyne.NewMenuItem("Undo", a.undo),
 			fyne.NewMenuItem("Redo", a.redo),
+			fyne.NewMenuItem("Delete Image", a.deleteFile),
 			fyne.NewMenuItem("Keyboard Shortucts", a.showShortcuts),
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
 			fyne.NewMenuItem("Fullscreen", a.focusMode),
+			fyne.NewMenuItem("Next Image", func() {
+				a.nextImage(true, false)
+			}),
+			fyne.NewMenuItem("Last Image", func() {
+				a.nextImage(false, false)
+			}),
 		),
 		fyne.NewMenu("Help",
 			fyne.NewMenuItem("About", func() {
 				dialog.ShowCustom("About", "Ok", container.NewVBox(
 					widget.NewLabel("A simple image viewer with some editing functionality."),
 					widget.NewHyperlink("Help and more information on Github", parseURL("https://github.com/Palexer/image-viewer")),
+					widget.NewLabel("v1.1.1 | License: MIT"),
 				), a.mainWin)
 			}),
 		),
 	)
 	a.mainWin.SetMainMenu(mainMenu)
-
 	a.loadKeyboardShortcuts()
 
 	// image canvas
@@ -341,29 +371,4 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 	a.split.SetOffset(0.90)
 	layout := container.NewBorder(nil, a.loadStatusBar(), nil, nil, a.split)
 	return layout
-}
-
-func (a *App) focusMode() {
-	if !a.focus {
-		a.fullscreenWin = a.app.NewWindow("Image Viewer - " + a.img.Path)
-		a.fullscreenWin.SetFullScreen(true)
-		a.fullscreenWin.Canvas().SetOnTypedKey(func(key *fyne.KeyEvent) {
-			switch key.Name {
-			case fyne.KeyEscape:
-				a.fullscreenWin.Close()
-			case fyne.KeyF11:
-				a.fullscreenWin.Close()
-			case fyne.KeyRight:
-				a.nextImage(true, false)
-			case fyne.KeyLeft:
-				a.nextImage(false, false)
-			}
-		})
-		a.fullscreenWin.SetContent(a.image)
-		a.fullscreenWin.Show()
-		a.focus = true
-	} else {
-		a.fullscreenWin.Hide()
-		a.focus = false
-	}
 }
