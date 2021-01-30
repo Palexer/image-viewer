@@ -16,6 +16,26 @@ import (
 	"fyne.io/fyne/v2/widget"
 )
 
+type enterEntry struct {
+	widget.Entry
+	enterFunc func(s string)
+}
+
+func (e *enterEntry) TypedKey(key *fyne.KeyEvent) {
+	switch key.Name {
+	case fyne.KeyReturn:
+		e.enterFunc(e.Text)
+	default:
+		e.Entry.TypedKey(key)
+	}
+}
+
+func newEnterEntry() *enterEntry {
+	entry := &enterEntry{}
+	entry.ExtendBaseWidget(entry)
+	return entry
+}
+
 type editingSlider struct {
 	widget.Slider
 	dragEndFunc func(float64)
@@ -92,6 +112,7 @@ type App struct {
 	leftArrow  *widget.Button
 	rightArrow *widget.Button
 	deleteBtn  *widget.Button
+	renameBtn  *widget.Button
 
 	fullscreenWin fyne.Window
 }

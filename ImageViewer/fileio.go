@@ -12,6 +12,7 @@ import (
 	"strings"
 
 	"fyne.io/fyne/v2"
+	"fyne.io/fyne/v2/container"
 	"fyne.io/fyne/v2/dialog"
 	"fyne.io/fyne/v2/storage"
 
@@ -107,6 +108,7 @@ func (a *App) open(file *os.File, folder bool) error {
 	a.leftArrow.Enable()
 	a.rightArrow.Enable()
 	a.deleteBtn.Enable()
+	a.renameBtn.Enable()
 	return nil
 }
 
@@ -167,4 +169,31 @@ func (a *App) deleteFile() {
 	} else {
 		a.nextImage(true, true)
 	}
+}
+
+func (a *App) renameDialog() {
+	entry := newEnterEntry()
+	entry.enterFunc = func(s string) {
+		newPath := strings.TrimSuffix(a.img.Path, filepath.Base(a.img.Path)) + s
+		if err := os.Rename(a.img.Path, newPath); err != nil {
+			dialog.ShowError(fmt.Errorf("failed to rename file: %v", err), a.mainWin)
+			return
+		}
+		a.img.Path = newPath
+		a.mainWin.SetTitle("Image Viewer - " + s)
+		a.mainWin.Canvas().Overlays().Top().Hide()
+	}
+
+	entry.SetPlaceHolder(filepath.Base(a.img.Path))
+	dialog.ShowCustomConfirm("Rename Image", "Ok", "Cancel", container.NewVBox(entry), func(b bool) {
+		if b {
+			newPath := strings.TrimSuffix(a.img.Path, filepath.Base(a.img.Path)) + entry.Text
+			if err := os.Rename(a.img.Path, newPath); err != nil {
+				dialog.ShowError(fmt.Errorf("failed to rename file: %v", err), a.mainWin)
+				return
+			}
+			a.img.Path = newPath
+			a.mainWin.SetTitle("Image Viewer - " + entry.Text)
+		}
+	}, a.mainWin)
 }

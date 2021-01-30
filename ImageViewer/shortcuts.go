@@ -61,14 +61,31 @@ func (a *App) loadKeyboardShortcuts() {
 				a.mainWin.Canvas().Overlays().Top().Hide()
 			}
 		case fyne.KeyF11:
-			a.focusMode()
+			if a.image.Image == nil {
+				return
+			}
+			a.fullscreenMode()
+		case fyne.KeyF2:
+			if a.image.Image == nil {
+				return
+			}
+			a.renameDialog()
 		}
 	})
 }
 
 func (a *App) showShortcuts() {
-	shortcuts := []string{"Ctrl+O", "Ctrl+S", "Ctrl+Z", "Ctrl+Y", "Ctrl+Q", "F11", "Arrow Right", "Arrow Left", "Delete", "Escape"}
-	descriptions := []string{"Open File", "Save File", "Undo", "Redo", "Quit Application", "Fullscreen View", "Next Image", "Last Image", "Delete Image", "Close dialog"}
+	shortcuts := []string{
+		"Ctrl+O", "Ctrl+S", "Ctrl+Z",
+		"Ctrl+Y", "Ctrl+Q", "F11",
+		"Arrow Right", "Arrow Left", "Delete",
+		"F2", "Escape"}
+	descriptions := []string{
+		"Open File", "Save File", "Undo",
+		"Redo", "Quit Application", "Fullscreen View",
+		"Next Image", "Last Image", "Delete Image",
+		"Rename", "Close dialog"}
+
 	win := a.app.NewWindow("Keyboard Shortcuts")
 	table := widget.NewTable(
 		func() (int, int) { return len(shortcuts), 2 },

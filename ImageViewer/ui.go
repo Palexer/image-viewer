@@ -62,7 +62,7 @@ func (a *App) nextImage(forward, folder bool) {
 	}
 }
 
-func (a *App) focusMode() {
+func (a *App) fullscreenMode() {
 	if !a.focus {
 		a.fullscreenWin = a.app.NewWindow("Image Viewer - " + a.img.Path)
 		a.fullscreenWin.SetFullScreen(true)
@@ -107,12 +107,16 @@ func (a *App) loadStatusBar() *fyne.Container {
 	})
 	a.deleteBtn.Disable()
 
+	a.renameBtn = widget.NewButtonWithIcon("", theme.DocumentCreateIcon(), a.renameDialog)
+	a.renameBtn.Disable()
+
 	a.statusBar = container.NewVBox(
 		widget.NewSeparator(),
 		container.NewHBox(
 			a.leftArrow,
 			a.rightArrow,
 			layout.NewSpacer(),
+			a.renameBtn,
 			a.deleteBtn,
 		),
 	)
@@ -336,7 +340,12 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 			fyne.NewMenuItem("Preferences", a.loadSettingsUI),
 		),
 		fyne.NewMenu("View",
-			fyne.NewMenuItem("Fullscreen", a.focusMode),
+			fyne.NewMenuItem("Fullscreen", func() {
+				if a.image.Image == nil {
+					return
+				}
+				a.fullscreenMode()
+			}),
 			fyne.NewMenuItem("Next Image", func() {
 				a.nextImage(true, false)
 			}),
@@ -349,7 +358,7 @@ func (a *App) loadMainUI() fyne.CanvasObject {
 				dialog.ShowCustom("About", "Ok", container.NewVBox(
 					widget.NewLabel("A simple image viewer with some editing functionality."),
 					widget.NewHyperlink("Help and more information on Github", parseURL("https://github.com/Palexer/image-viewer")),
-					widget.NewLabel("v1.1.1 | License: MIT"),
+					widget.NewLabel("v1.2 | License: MIT"),
 				), a.mainWin)
 			}),
 		),
