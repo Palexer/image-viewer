@@ -70,6 +70,12 @@ func (a *App) loadKeyboardShortcuts() {
 				return
 			}
 			a.renameDialog()
+		case fyne.KeyPlus:
+			a.zoomImageIn()
+		case fyne.KeyMinus:
+			a.zoomImageOut()
+		case fyne.KeyEqual:
+			a.resetZoom()
 		}
 	})
 }
@@ -79,12 +85,13 @@ func (a *App) showShortcuts() {
 		"Ctrl+O", "Ctrl+S", "Ctrl+Z",
 		"Ctrl+Y", "Ctrl+Q", "F11",
 		"Arrow Right", "Arrow Left", "Delete",
-		"F2", "Escape"}
+		"F2", "Escape", "Plus", "Minus", "Equal"}
 	descriptions := []string{
 		"Open File", "Save File", "Undo",
 		"Redo", "Quit Application", "Fullscreen View",
 		"Next Image", "Last Image", "Delete Image",
-		"Rename", "Close dialog"}
+		"Rename", "Close dialog", "Zoom In", "Zoom Out",
+		"Zoom to 100%"}
 
 	win := a.app.NewWindow("Keyboard Shortcuts")
 	table := widget.NewTable(

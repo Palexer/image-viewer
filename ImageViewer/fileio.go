@@ -102,6 +102,8 @@ func (a *App) open(file *os.File, folder bool) error {
 	a.img.lastFilters = nil
 	a.img.lastFiltersUndone = nil
 
+	a.resetZoom()
+
 	// activate widgets
 	a.reset()
 	a.resetBtn.Enable()
@@ -109,6 +111,9 @@ func (a *App) open(file *os.File, folder bool) error {
 	a.rightArrow.Enable()
 	a.deleteBtn.Enable()
 	a.renameBtn.Enable()
+	a.zoomIn.Enable()
+	a.zoomOut.Enable()
+	a.resetZoomBtn.Enable()
 	return nil
 }
 

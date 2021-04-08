@@ -110,12 +110,27 @@ func (a *App) loadStatusBar() *fyne.Container {
 	a.renameBtn = widget.NewButtonWithIcon("", theme.DocumentCreateIcon(), a.renameDialog)
 	a.renameBtn.Disable()
 
+	a.zoomIn = widget.NewButtonWithIcon("", theme.ZoomInIcon(), a.zoomImageIn)
+	a.zoomIn.Disable()
+
+	a.zoomOut = widget.NewButtonWithIcon("", theme.ZoomOutIcon(), a.zoomImageOut)
+	a.zoomOut.Disable()
+
+	a.zoomLabel = widget.NewLabel("")
+
+	a.resetZoomBtn = widget.NewButtonWithIcon("", theme.ZoomFitIcon(), a.resetZoom)
+	a.resetZoomBtn.Disable()
+
 	a.statusBar = container.NewVBox(
 		widget.NewSeparator(),
 		container.NewHBox(
 			a.leftArrow,
 			a.rightArrow,
 			layout.NewSpacer(),
+			a.zoomLabel,
+			a.resetZoomBtn,
+			a.zoomOut,
+			a.zoomIn,
 			a.renameBtn,
 			a.deleteBtn,
 		),

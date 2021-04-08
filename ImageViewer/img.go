@@ -3,6 +3,7 @@ package main
 import (
 	"image"
 	"os"
+	"strconv"
 
 	"github.com/disintegration/gift"
 )
@@ -17,6 +18,8 @@ type Img struct {
 	ImagesInFolder []string
 	index          int
 	Directory      string
+
+	zoom int
 
 	// saved filters
 	// general
@@ -120,4 +123,67 @@ func (a *App) redo() {
 		a.img.lastFiltersUndone = a.img.lastFiltersUndone[:len(a.img.lastFiltersUndone)-1]
 		a.apply()
 	}
+}
+
+func (a *App) zoomImageIn() {
+	if a.img.OriginalImage == nil {
+		return
+	}
+
+	src := a.img.OriginalImage
+
+	my_width := src.Bounds().Dx() - a.img.zoom
+	my_height := src.Bounds().Dy() - a.img.zoom
+
+	if a.img.zoom < my_width {
+		a.img.zoom += 25
+	}
+	g := gift.New(
+		gift.Crop(image.Rect(a.img.zoom, a.img.zoom, my_width, my_height)),
+	)
+	dst := image.NewRGBA(g.Bounds(src.Bounds()))
+	g.Draw(dst, src)
+
+	// show new image
+	a.image.Image = dst
+	a.image.Refresh()
+
+	// show zoom level
+	a.zoomLabel.SetText(strconv.Itoa(100+a.img.zoom) + "%")
+}
+
+func (a *App) zoomImageOut() {
+	if a.img.OriginalImage == nil {
+		return
+	}
+	if a.img.zoom > 0 {
+		a.img.zoom -= 25
+
+	}
+	src := a.img.OriginalImage
+
+	my_width := src.Bounds().Dx() - a.img.zoom
+	my_height := src.Bounds().Dy() - a.img.zoom
+
+	g := gift.New(
+		gift.Crop(image.Rect(a.img.zoom, a.img.zoom, my_width, my_height)),
+	)
+	dst := image.NewRGBA(g.Bounds(src.Bounds()))
+	g.Draw(dst, src)
+
+	// show new image
+	a.image.Image = dst
+	a.image.Refresh()
+
+	// show zoom level
+	a.zoomLabel.SetText(strconv.Itoa(100+a.img.zoom) + "%")
+}
+
+func (a *App) resetZoom() {
+	a.img.zoom = 0
+	a.zoomLabel.SetText("100%")
+
+	// show new image
+	a.image.Image = a.img.OriginalImage
+	a.image.Refresh()
 }
