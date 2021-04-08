@@ -51,8 +51,7 @@ sudo make uninstall
 
 - undo/redo: change parameter values back to default
 - open recent images
-- rename image
-- zoom
+- write tests
 
 ## Help
 
