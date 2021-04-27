@@ -53,7 +53,7 @@ func newEditingSlider(min, max float64) *editingSlider {
 	return editSlider
 }
 
-// newEditingOption creates a new VBox, that includes an info text and a widget to edit the paramter
+// newEditingOption creates a new VBox, that includes an info text and a widget to edit the parameter
 func newEditingOption(infoText string, slider *editingSlider, defaultValue float64) *fyne.Container {
 	data := binding.BindFloat(&defaultValue)
 	text := widget.NewLabel(infoText)

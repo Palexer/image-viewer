@@ -61,6 +61,10 @@ func (a *App) open(file *os.File, folder bool) error {
 
 	// get and display FileInfo
 	a.img.FileData, err = os.Stat(a.img.Path)
+	if err != nil {
+		return err
+	}
+
 	a.imgSize.SetText(fmt.Sprintf("Size: %.2f Mb", float64(a.img.FileData.Size())/1000000))
 
 	a.imgLastMod.SetText(fmt.Sprintf("Last modified: \n%s", a.img.FileData.ModTime().Format("02-01-2006")))
