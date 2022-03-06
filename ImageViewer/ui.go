@@ -242,7 +242,7 @@ func (a *App) loadEditorTab() *container.TabItem {
 						dialog.ShowError(err, a.mainWin)
 						return
 					}
-					if err := widthEntry.Validate(); err != nil {
+					if err := heightEntry.Validate(); err != nil {
 						dialog.ShowError(err, a.mainWin)
 						return
 					}
